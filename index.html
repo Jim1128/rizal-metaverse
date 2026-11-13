@@ -73,7 +73,35 @@
   .mobile #bar{max-width:58vw;gap:4px}
   .mobile #bar button{padding:5px 7px;font-size:11px}
   .mobile #tour{top:auto;bottom:8px;font-size:12px;max-width:46vw}
-  .mobile #panel{max-height:90vh;padding:14px 16px}
+  #close{position:sticky!important;top:0;float:right;z-index:2}
+  #start .card{max-height:94dvh}
+  /* phone: the window is pinned to the visible screen and scrolls inside, sized for a short landscape view */
+  .mobile #panel{top:6px;transform:translateX(-50%);width:min(760px,96vw);max-height:calc(100vh - 12px);max-height:calc(100dvh - 12px);padding:10px 16px 14px;box-sizing:border-box;overscroll-behavior:contain}
+  .mobile #panel h2{font-size:18px;margin:0 0 4px}
+  .mobile #panel h3{font-size:14px;margin:8px 0 3px}
+  .mobile #panel p,.mobile #panel ol,.mobile #panel ul,.mobile #panel .rowi{font-size:13.5px;line-height:1.4}
+  .mobile #panel p{margin:5px 0}
+  .mobile #panel .q{font-size:15px}
+  .mobile #panel button{font-size:13px;padding:7px 12px;margin-top:6px}
+  .mobile #panel button.ask{display:inline-block;margin:3px 6px 3px 0;padding:6px 10px}
+  .mobile #panel textarea{height:58px}
+  .mobile #panel input,.mobile #panel textarea{font-size:16px;padding:6px}
+  .mobile #panel pre{max-height:150px;font-size:11px}
+  #rotate{display:none;position:fixed;inset:0;z-index:40;background:#3b2a1a;color:#f6ecd6;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box;font-size:20px;line-height:1.5}
+  @media (orientation:portrait){.mobile #rotate{display:flex}}
+  @media (max-height:480px){
+    #start .card{padding:12px 18px;width:min(640px,94vw)}
+    #start h1{font-size:20px} #start p{margin:2px 0 6px;font-size:13px}
+    #start label{margin:6px 0 3px} #start textarea{height:44px}
+    #start .worlds button{padding:6px}
+    #start .ctl{display:none}
+    .mobile #joy{width:110px;height:110px;left:14px;bottom:12px}
+    .mobile #knob{left:30px;top:30px}
+    .mobile #btns{bottom:10px;right:12px;gap:6px}
+    .mobile #btns button{width:54px;height:54px;font-size:11px}
+    .mobile #btns #bUse{width:68px;height:68px;font-size:14px}
+    .mobile #prompt{bottom:14px;font-size:13px;padding:6px 12px;max-width:44vw}
+  }
   .mobile #say{bottom:auto;top:80px}
 </style>
 </head>
@@ -124,6 +152,7 @@
 <input id="say" hidden maxlength="110" placeholder="Type what your avatar says, then press Enter">
 <div id="panel" hidden></div>
 <div id="fade"></div>
+<div id="rotate"><div><b>Turn your phone sideways</b><br>This world is played in landscape.</div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -1461,7 +1490,12 @@ function applyDevice() {
   document.body.classList.toggle('mobile', mobile);
   document.getElementById('joy').hidden = document.getElementById('btns').hidden = !mobile;
   // phones skip the shadow pass and render at a lower resolution to stay smooth
-  if (mobile) { sun.castShadow = false; renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); }
+  if (mobile) {
+    sun.castShadow = false; renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    // full screen hides the address bar; the landscape lock only works on browsers that allow it (not iPhone)
+    const root = document.documentElement;
+    if (root.requestFullscreen) root.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(() => {});
+  }
 }
 setDevice(mobile);
 document.querySelectorAll('#start [data-dev]').forEach(b => { b.onclick = () => setDevice(b.dataset.dev === 'mobile'); });
