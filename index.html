@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Rizal in the Metaverse</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#111;font-family:Georgia,"Times New Roman",serif;color:#2b2118}
+  canvas{display:block}
+  [hidden]{display:none!important}
+  #start{position:fixed;inset:0;background:linear-gradient(160deg,#3b2a1a,#7a3b2e);display:flex;align-items:center;justify-content:center;z-index:30}
+  #start .card{background:#f6ecd6;border:3px solid #5a4030;border-radius:10px;padding:26px 30px;width:min(520px,90vw);box-shadow:0 12px 40px #0008}
+  #start h1{margin:0 0 4px;font-size:30px}
+  #start p{margin:4px 0 14px;font-size:15px}
+  label{display:block;font-size:13px;font-weight:bold;margin:10px 0 4px}
+  input,textarea{width:100%;box-sizing:border-box;font:15px Georgia,serif;padding:8px;border:1px solid #8a6f55;border-radius:5px;background:#fffaf0}
+  textarea{height:96px;resize:vertical}
+  button{font:bold 15px Georgia,serif;background:#7a3b2e;color:#fff;border:0;border-radius:5px;padding:9px 18px;cursor:pointer;margin-top:10px}
+  button:hover{background:#96503f}
+  button.alt{background:#5a4030}
+  #hud>div{position:fixed;z-index:10;pointer-events:none}
+  #zone{top:12px;left:14px;background:#f6ecd6e6;border:2px solid #5a4030;border-radius:6px;padding:6px 12px;font-size:17px;font-weight:bold}
+  #help{bottom:12px;left:14px;background:#000a;color:#fff;border-radius:6px;padding:8px 12px;font:12px/1.6 Consolas,monospace}
+  #prompt{bottom:70px;left:50%;transform:translateX(-50%);background:#f6ecd6;border:2px solid #7a3b2e;border-radius:20px;padding:8px 18px;font-size:16px;font-weight:bold}
+  #say{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:min(560px,80vw);z-index:15}
+  #panel{position:fixed;z-index:20;top:50%;left:50%;transform:translate(-50%,-50%);width:min(620px,92vw);max-height:84vh;overflow:auto;background:#f6ecd6;border:3px solid #5a4030;border-radius:10px;padding:20px 24px;box-shadow:0 12px 40px #000a}
+  #panel h2{margin:0 30px 8px 0;font-size:23px}
+  #panel p{font-size:16px;line-height:1.5;margin:8px 0}
+  #panel .role{font-style:italic;color:#7a3b2e;margin-top:0}
+  #panel .quote{border-left:4px solid #7a3b2e;padding-left:12px;font-style:italic}
+  #panel .q{font-weight:bold;font-size:18px}
+  #panel .dim{color:#77685a;font-size:14px}
+  #panel .ans{background:#fffaf0;border:1px solid #d6c3a1;border-radius:5px;padding:7px 30px 7px 10px;margin:6px 0;font-size:15px;position:relative}
+  #panel .x{position:absolute;right:4px;top:4px;margin:0;padding:0 7px;background:#b9a48a;font-size:14px}
+  #close{position:absolute;top:10px;right:12px;margin:0;padding:2px 10px;background:#5a4030}
+  #panel ol{font-size:16px;line-height:1.5;padding-left:22px}
+  #panel p{white-space:pre-line}
+  #panel h3{margin:16px 0 4px;font-size:17px;color:#7a3b2e;border-bottom:1px solid #d6c3a1;padding-bottom:3px}
+  #panel ul{font-size:15px;line-height:1.5;padding-left:20px;margin:6px 0}
+  #panel .rowi{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dotted #d6c3a1;font-size:15px}
+  #panel .rowi span{flex:1}
+  #panel .rowi button{margin:0;padding:5px 11px;font-size:13px}
+  #panel button.ask{display:block;margin:6px 0;padding:6px 11px;font-size:14px;text-align:left}
+  #panel .ok{color:#2f6b3a;font-weight:bold}
+  #panel pre{white-space:pre-wrap;font:13px/1.5 Consolas,monospace;background:#fffaf0;border:1px solid #d6c3a1;border-radius:5px;padding:10px;max-height:280px;overflow:auto}
+  #panel .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  #panel .grid button{margin:0}
+  #bar{top:12px;right:14px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:62vw}
+  #bar button{margin:0;padding:6px 11px;font-size:13px;background:#5a4030e6;border:1px solid #f6ecd6}
+  #bar button:hover{background:#7a3b2e}
+  #progress{top:56px;left:14px;background:#000a;color:#fff;border-radius:6px;padding:5px 10px;font:12px Consolas,monospace}
+  #tour{top:60px;left:50%;transform:translateX(-50%);background:#f6ecd6;border:2px solid #3d5a80;border-radius:8px;padding:8px 12px;font-size:14px;max-width:64vw;display:flex;gap:8px;align-items:center}
+  #tour button{margin:0;padding:5px 10px;font-size:13px;white-space:nowrap}
+  #bar,#tour{pointer-events:auto!important}
+  #toast{bottom:124px;left:50%;transform:translateX(-50%);background:#2f6b3a;color:#fff;border-radius:6px;padding:8px 16px;font-size:14px}
+  #fade{position:fixed;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .25s;z-index:12}
+  #start .worlds{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  #start .worlds button{margin:0;padding:10px 6px;font-size:14px}
+  #start .ctl{font:12px/1.6 Consolas,monospace;color:#5a4030;margin-top:12px}
+  #start .card{max-height:94vh;overflow:auto;box-sizing:border-box}
+  #start .dev{grid-template-columns:1fr 1fr}
+  canvas{touch-action:none}
+  #joy{left:22px;bottom:22px;width:130px;height:130px;border-radius:50%;background:#0006;border:2px solid #fff8;touch-action:none}
+  #knob{position:absolute;left:40px;top:40px;width:50px;height:50px;border-radius:50%;background:#f6ecd6cc}
+  #btns{right:18px;bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #btns button{margin:0;padding:0;width:64px;height:64px;border-radius:50%;font-size:13px;background:#7a3b2ecc;border:2px solid #fff8;touch-action:none}
+  #btns #bUse{grid-column:span 2;justify-self:end;width:84px;height:84px;font-size:16px;background:#2f6b3acc}
+  #btns #bRun.on{background:#e1a730;color:#2b2118}
+  #joy,#btns,#prompt{pointer-events:auto!important}
+  .mobile #help{display:none}
+  .mobile #zone{font-size:13px;padding:4px 8px}
+  .mobile #progress{top:44px;font-size:10px}
+  .mobile #bar{max-width:58vw;gap:4px}
+  .mobile #bar button{padding:5px 7px;font-size:11px}
+  .mobile #tour{top:auto;bottom:8px;font-size:12px;max-width:46vw}
+  .mobile #panel{max-height:90vh;padding:14px 16px}
+  .mobile #say{bottom:auto;top:80px}
+</style>
+</head>
+<body>
+
+<div id="start">
+  <div class="card">
+    <h1>Rizal in the Metaverse</h1>
+    <p>A walk-through world of <i>Noli Me Tangere</i> and <i>El Filibusterismo</i>.</p>
+    <label for="inName">Your name</label>
+    <input id="inName" maxlength="30" placeholder="e.g. Juan">
+    <label for="inMembers">Group members and roles (one per line)</label>
+    <textarea id="inMembers" placeholder="Ana - World Builder&#10;Ben - Scriptwriter&#10;Carla - Moderator&#10;Dan - Character Voice / Avatar&#10;Ella - Tech Support"></textarea>
+    <label>Device</label>
+    <div class="worlds dev">
+      <button data-dev="pc">Computer<br>keyboard and mouse</button>
+      <button data-dev="mobile">Phone or tablet<br>touch controls</button>
+    </div>
+    <label>Choose a world to enter</label>
+    <div class="worlds">
+      <button data-go="hub">Central Plaza<br>Story Hall</button>
+      <button data-go="noli">Noli Me Tangere<br>San Diego</button>
+      <button data-go="fili">El Filibusterismo<br>Manila</button>
+    </div>
+    <div class="ctl">W A S D or arrows: move · Shift: run · drag mouse: look · wheel: zoom<br>E: interact · Enter: speak · buttons at the top right open every menu</div>
+  </div>
+</div>
+
+<div id="hud">
+  <div id="zone">Central Plaza</div>
+  <div id="prompt" hidden></div>
+  <div id="progress"></div>
+  <div id="bar">
+    <button data-a="menu">Menu</button>
+    <button data-a="story">Story</button>
+    <button data-a="travel">Travel</button>
+    <button data-a="journal">Scenes &amp; Progress</button>
+    <button data-a="guide">Moderator</button>
+    <button data-a="output">Output</button>
+    <button data-a="snap">Screenshot</button>
+  </div>
+  <div id="tour" hidden><span id="tourText"></span><button id="tourPrev" class="alt">Back</button><button id="tourNext">Next stop</button><button id="tourEnd" class="alt">End</button></div>
+  <div id="toast" hidden></div>
+  <div id="joy" hidden><div id="knob"></div></div>
+  <div id="btns" hidden><button id="bUse">USE</button><button id="bRun">RUN</button><button id="bTalk">TALK</button></div>
+  <div id="help">W A S D / arrows: walk and turn &nbsp;|&nbsp; Shift: run &nbsp;|&nbsp; drag mouse: look<br>E: interact &nbsp;|&nbsp; Enter: speak &nbsp;|&nbsp; B: story &nbsp;|&nbsp; T: travel &nbsp;|&nbsp; J: scenes and progress<br>M: moderator guide &nbsp;|&nbsp; P: creative output &nbsp;|&nbsp; K: screenshot &nbsp;|&nbsp; H: hide text</div>
+</div>
+<input id="say" hidden maxlength="110" placeholder="Type what your avatar says, then press Enter">
+<div id="panel" hidden></div>
+<div id="fade"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+
+/* ---------- saved data (stays in this browser) ---------- */
+const KEY = 'rizalMetaverse1';
+const save = { name: '', members: '', answers: {}, met: {}, seen: {} };
+try { Object.assign(save, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} updateProgress(); }
+
+/* ---------- scene ---------- */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x9fd3ff);
+scene.fog = new THREE.Fog(0x9fd3ff, 50, 230);
+const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+const hemi = new THREE.HemisphereLight(0xffffff, 0x556644, 0.72);
+const sun = new THREE.DirectionalLight(0xfff2d6, 0.58);
+sun.position.set(40, 80, 30);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.bias = -0.0005;
+Object.assign(sun.shadow.camera, { left: -75, right: 75, top: 75, bottom: -75, near: 1, far: 240 });
+scene.add(hemi, sun, sun.target);
+
+/* ---------- helpers ---------- */
+const mats = {};
+const M = c => mats[c] || (mats[c] = new THREE.MeshLambertMaterial({ color: c }));
+const colliders = [];
+const interact = [];
+const npcs = [];
+const spinners = [];
+const boards = {};
+const SCENES = [];
+const portals = [];
+
+function box(w, h, d, c, x, y, z, solid, parent) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M(c));
+  m.position.set(x, y + h / 2, z);
+  m.castShadow = m.receiveShadow = true;
+  (parent || scene).add(m);
+  if (solid) colliders.push({ a: x - w / 2, b: x + w / 2, c: z - d / 2, d: z + d / 2 });
+  return m;
+}
+function cyl(rt, rb, h, c, x, y, z, seg, parent) {
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, seg || 12), M(c));
+  m.position.set(x, y + h / 2, z);
+  m.castShadow = m.receiveShadow = true;
+  (parent || scene).add(m);
+  return m;
+}
+function wrap(k, text, x, y, maxW, lh, maxL) {
+  const words = String(text).split(/\s+/);
+  let line = '', n = 0;
+  for (const w of words) {
+    const t = line ? line + ' ' + w : w;
+    if (k.measureText(t).width > maxW && line) {
+      n++;
+      if (n === maxL) { k.fillText(line + ' …', x, y); return y + lh; }
+      k.fillText(line, x, y); y += lh; line = w;
+    } else line = t;
+  }
+  if (line) { k.fillText(line, x, y); y += lh; }
+  return y;
+}
+function textSprite(lines, o) {
+  o = o || {};
+  if (!Array.isArray(lines)) lines = [lines];
+  const fs = 44, pad = 16, c = document.createElement('canvas'), k = c.getContext('2d');
+  k.font = 'bold ' + fs + 'px Georgia';
+  const w = Math.max.apply(null, lines.map(l => k.measureText(l).width)) + pad * 2;
+  c.width = Math.ceil(w); c.height = lines.length * (fs + 8) + pad * 2 - 8;
+  k.font = 'bold ' + fs + 'px Georgia';
+  k.fillStyle = o.bg || 'rgba(30,20,12,.78)';
+  k.fillRect(0, 0, c.width, c.height);
+  k.fillStyle = o.fg || '#fff'; k.textAlign = 'center'; k.textBaseline = 'top';
+  lines.forEach((l, i) => k.fillText(l, c.width / 2, pad + i * (fs + 8)));
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), depthTest: o.onTop ? false : true }));
+  const hWorld = (o.h || 0.42) * lines.length + 0.1;
+  s.scale.set(hWorld * c.width / c.height, hWorld, 1);
+  return s;
+}
+function sign(lines, w, h, x, y, z, rot, bg, fg, post) {
+  const c = document.createElement('canvas'), k = c.getContext('2d');
+  c.width = 768; c.height = Math.round(768 * h / w);
+  k.fillStyle = bg; k.fillRect(0, 0, c.width, c.height);
+  k.fillStyle = fg; k.textAlign = 'center'; k.textBaseline = 'middle';
+  const slot = c.height / lines.length;
+  lines.forEach((l, i) => {
+    let fs = Math.min(slot * 0.62, 90);
+    k.font = 'bold ' + fs + 'px Georgia';
+    const tw = k.measureText(l).width;
+    if (tw > c.width - 40) { fs *= (c.width - 40) / tw; k.font = 'bold ' + fs + 'px Georgia'; }
+    k.fillText(l, c.width / 2, slot * (i + 0.5));
+  });
+  const g = new THREE.Group();
+  g.position.set(x, y, z); g.rotation.y = rot;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c) }));
+  m.position.z = 0.08; g.add(m);
+  box(w + 0.25, h + 0.25, 0.12, 0x5a4030, 0, -(h + 0.25) / 2, 0, false, g);
+  if (post) box(0.22, y, 0.22, 0x5a4030, 0, -y, -0.1, false, g);
+  scene.add(g);
+}
+function person(o) {
+  const g = new THREE.Group();
+  const add = (w, h, d, c, x, y, z) => box(w, h, d, c, x, y, z, false, g);
+  const hair = o.hair === undefined ? 0x1b1512 : o.hair;
+  g.userData.legs = [];
+  if (o.robe) add(0.82, 1.72, 0.56, o.robe, 0, 0, 0);
+  else if (o.skirt) { add(0.98, 0.95, 0.72, o.skirt, 0, 0, 0); add(0.7, 0.8, 0.4, o.body, 0, 0.95, 0); }
+  else {
+    g.userData.legs.push(add(0.28, 0.9, 0.3, o.legs || 0x33302c, -0.18, 0, 0), add(0.28, 0.9, 0.3, o.legs || 0x33302c, 0.18, 0, 0));
+    g.userData.body = add(0.72, 0.85, 0.4, o.body, 0, 0.9, 0);
+  }
+  const arm = o.robe || o.body;
+  add(0.2, 0.75, 0.25, arm, -0.5, 0.95, 0); add(0.2, 0.75, 0.25, arm, 0.5, 0.95, 0);
+  add(0.46, 0.46, 0.46, o.skin || 0xc68e5f, 0, 1.76, 0);
+  add(0.07, 0.07, 0.02, 0x111111, -0.11, 2.0, 0.235); add(0.07, 0.07, 0.02, 0x111111, 0.11, 2.0, 0.235);
+  if (hair !== null) {
+    add(0.5, 0.14, 0.5, hair, 0, 2.2, 0); add(0.5, 0.32, 0.1, hair, 0, 1.94, -0.25);
+    if (o.longHair) add(0.5, 0.75, 0.12, hair, 0, 1.3, -0.3);
+  }
+  if (o.hat === 'top') { add(0.74, 0.05, 0.74, 0x111111, 0, 2.34, 0); add(0.44, 0.42, 0.44, 0x111111, 0, 2.38, 0); }
+  if (o.hat === 'salakot') {
+    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.62, 0.36, 12), M(0xb08a4a));
+    cone.position.set(0, 2.5, 0); g.add(cone);
+  }
+  if (o.small) g.scale.setScalar(0.68);
+  return g;
+}
+function npc(d) {
+  const g = person(d.look);
+  g.position.set(d.x, 0, d.z); g.rotation.y = d.rot || 0;
+  scene.add(g);
+  const rec = { g: g, base: d.rot || 0, d: d };
+  setTag(rec);
+  npcs.push(rec);
+  interact.push({ get x() { return g.position.x; }, get z() { return g.position.z; }, r: 3, label: 'Talk to ' + d.name, open: () => showNPC(d) });
+  return rec;
+}
+function info(x, z, label, title, text, r) {
+  interact.push({ x: x, z: z, r: r || 3.5, label: label, open: () => openPanel(title, p => text.forEach(t => p.append(el('p', { textContent: t })))) });
+}
+function setTag(rec) {
+  const name = rec.d.name, met = save.met[name];
+  if (rec.tag) rec.g.remove(rec.tag);
+  rec.tag = textSprite((met ? '✓ ' : '') + name, met ? { bg: 'rgba(47,107,58,.92)' } : null);
+  rec.tag.position.y = 2.95; rec.g.add(rec.tag);
+}
+// s: { id, x, z, title, ref, context, cast, lines, take, q }
+function keyScene(s) {
+  s.mat = new THREE.MeshBasicMaterial({ color: save.seen[s.id] ? 0x4caf50 : 0xffd23f });
+  const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.5), s.mat);
+  m.position.set(s.x, 2.9, s.z); scene.add(m); spinners.push(m);
+  const tag = textSprite('KEY SCENE', { bg: 'rgba(122,59,46,.9)' }); tag.position.set(s.x, 3.9, s.z); scene.add(tag);
+  SCENES.push(s);
+  interact.push({ x: s.x, z: s.z, r: 2.6, mh: 5, label: 'Watch key scene: ' + s.title, open: () => showScene(s) });
+}
+// door: sides with a doorway ('n','s','e','w', may combine). o.skip: sides with no wall. o.roofH: 0 for a flat roof.
+function room(cx, cz, w, d, h, c, door, floorC, roofC, o) {
+  o = o || {};
+  const t = 0.5, dw = 3.4, x0 = cx - w / 2, x1 = cx + w / 2, z0 = cz - d / 2, z1 = cz + d / 2;
+  const seg = (ax, az, bx, bz) => box(Math.abs(bx - ax) + t, h, Math.abs(bz - az) + t, c, (ax + bx) / 2, 0, (az + bz) / 2, true);
+  const side = (name, ax, az, bx, bz) => {
+    if ((o.skip || '').indexOf(name) >= 0) return;
+    if (door.indexOf(name) < 0) { seg(ax, az, bx, bz); return; }
+    if (az === bz) { seg(ax, az, cx - dw / 2 - t / 2, bz); seg(cx + dw / 2 + t / 2, az, bx, bz); box(dw, h - 3.8, t, c, cx, 3.8, az); }
+    else { seg(ax, az, bx, cz - dw / 2 - t / 2); seg(ax, cz + dw / 2 + t / 2, bx, bz); box(t, h - 3.8, dw, c, ax, 3.8, cz); }
+  };
+  side('n', x0, z0, x1, z0); side('s', x0, z1, x1, z1); side('w', x0, z0, x0, z1); side('e', x1, z0, x1, z1);
+  box(w, 0.06, d, floorC, cx, 0.03, cz);
+  box(w + 1.2, 0.35, d + 1.2, roofC, cx, h, cz);
+  if (o.roofH !== 0) hipRoof(cx, cz, w + 1.6, d + 1.6, h + 0.35, o.roofH || 2.6, roofC);
+}
+function hipRoof(cx, cz, w, d, y, h, c) {
+  const g = new THREE.Group(), m = new THREE.Mesh(new THREE.ConeGeometry(1, h, 4), M(c));
+  m.rotation.y = Math.PI / 4; m.castShadow = true; g.add(m);
+  g.position.set(cx, y + h / 2, cz); g.scale.set(w / 1.4142, 1, d / 1.4142);
+  scene.add(g);
+}
+// bahay na bato: stone ground floor, overhanging wooden upper floor with capiz windows, tiled hip roof
+function house(cx, cz, w, d, o) {
+  o = o || {};
+  box(w, 3.2, d, o.stone || 0xddd3bd, cx, 0, cz, true);
+  box(w + 0.8, 2.8, d + 0.8, o.wood || 0x8a5a36, cx, 3.2, cz);
+  hipRoof(cx, cz, w + 2, d + 2, 6, 2.4, o.roof || 0x8c4a3a);
+  const nx = Math.max(2, Math.floor(w / 2.2)), nz = Math.max(2, Math.floor(d / 2.2));
+  for (let i = 0; i < nx; i++) {
+    const x = cx - w / 2 + (i + 0.5) * w / nx;
+    [1, -1].forEach(s => { box(1.3, 1.5, 0.1, 0xf3ead0, x, 3.85, cz + s * (d / 2 + 0.42)); box(0.9, 1.2, 0.1, 0x3a2a1e, x, 1.1, cz + s * (d / 2 + 0.02)); });
+  }
+  for (let i = 0; i < nz; i++) {
+    const z = cz - d / 2 + (i + 0.5) * d / nz;
+    [1, -1].forEach(s => { box(0.1, 1.5, 1.3, 0xf3ead0, cx + s * (w / 2 + 0.42), 3.85, z); box(0.1, 1.2, 0.9, 0x3a2a1e, cx + s * (w / 2 + 0.02), 1.1, z); });
+  }
+  const f = o.face || 's', fx = f === 'e' ? 1 : f === 'w' ? -1 : 0, fz = f === 's' ? 1 : f === 'n' ? -1 : 0;
+  const rot = f === 's' ? 0 : f === 'n' ? Math.PI : f === 'e' ? Math.PI / 2 : -Math.PI / 2;
+  box(fx ? 0.12 : 1.6, 2.3, fz ? 0.12 : 1.6, 0x4a2f1c, cx + fx * (w / 2 + 0.08), 0, cz + fz * (d / 2 + 0.08));
+  if (o.label) sign([o.label], Math.min(w - 0.6, 6.5), 0.7, cx + fx * (w / 2 + 0.14), 2.78, cz + fz * (d / 2 + 0.14), rot, '#5a4030', '#f6ecd6');
+}
+function lampPost(x, z) {
+  cyl(0.07, 0.11, 3.4, 0x2a2a2a, x, 0, z, 8);
+  const l = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.4), new THREE.MeshBasicMaterial({ color: 0xffe9a8 }));
+  l.position.set(x, 3.65, z); scene.add(l);
+}
+function palm(x, z) {
+  cyl(0.16, 0.26, 5.2, 0x8a7a5a, x, 0, z, 8);
+  for (let i = 0; i < 7; i++) {
+    const a = i / 7 * Math.PI * 2, leaf = new THREE.Mesh(new THREE.BoxGeometry(2.8, 0.06, 0.55), M(0x3f8f3f));
+    leaf.position.set(x + Math.cos(a) * 1.25, 4.78, z - Math.sin(a) * 1.25);
+    leaf.rotation.set(0, a, -0.38); leaf.castShadow = true; scene.add(leaf);
+  }
+  colliders.push({ a: x - 0.3, b: x + 0.3, c: z - 0.3, d: z + 0.3 });
+}
+function stall(x, z, c) {
+  box(2.4, 0.85, 1.4, 0x8a5a36, x, 0, z, true);
+  [[-1.3, -0.8], [1.3, -0.8], [-1.3, 0.8], [1.3, 0.8]].forEach(p => box(0.12, 2.6, 0.12, 0x6b4a2b, x + p[0], 0, z + p[1]));
+  box(3.1, 0.12, 2.1, c, x, 2.6, z);
+  [0xd94f30, 0xe8b93a, 0x5a9a3a].forEach((g, i) => box(0.5, 0.3, 0.5, g, x - 0.7 + i * 0.7, 0.85, z));
+}
+function bench(x, z, alongX) { box(alongX ? 3 : 0.9, 0.5, alongX ? 0.9 : 3, 0x8a5a36, x, 0, z, true); }
+function portal(x, z, rot, color, label, dest) {
+  const g = new THREE.Group(); g.position.set(x, 2.3, z); g.rotation.y = rot;
+  g.add(new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.2, 8, 28), new THREE.MeshBasicMaterial({ color: color })));
+  const disc = new THREE.Mesh(new THREE.CircleGeometry(1.8, 28), new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.35, side: THREE.DoubleSide }));
+  g.add(disc); scene.add(g); portals.push(disc);
+  const tag = textSprite(label, { bg: 'rgba(20,20,30,.85)' }); tag.position.set(x, 5.1, z); scene.add(tag);
+  interact.push({ x: x, z: z, r: 2.6, mh: 6, label: 'Portal to ' + label, open: () => tp(dest[0], dest[1], dest[2]) });
+}
+function tp(x, z, yw) {
+  const f = document.getElementById('fade');
+  f.style.opacity = 1; closePanel();
+  setTimeout(() => { player.position.set(x, 0, z); yaw = yw; camDist = 3; f.style.opacity = 0; }, 260);
+}
+function tree(x, z, s) {
+  cyl(0.25 * s, 0.35 * s, 2.2 * s, 0x6b4a2b, x, 0, z, 8);
+  const f = new THREE.Mesh(new THREE.SphereGeometry(1.7 * s, 8, 6), M(0x2f7d3a));
+  f.position.set(x, 3.2 * s, z); f.castShadow = true; scene.add(f);
+  const f2 = new THREE.Mesh(new THREE.SphereGeometry(1.15 * s, 8, 6), M(0x3d9447));
+  f2.position.set(x + 0.5 * s, 4.5 * s, z - 0.3 * s); f2.castShadow = true; scene.add(f2);
+  colliders.push({ a: x - 0.4, b: x + 0.4, c: z - 0.4, d: z + 0.4 });
+}
+function el(tag, props, kids) {
+  const e = document.createElement(tag);
+  Object.assign(e, props || {});
+  (kids || []).forEach(k => e.append(k));
+  return e;
+}
+
+/* ---------- ground, paths, zones ---------- */
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), M(0x6fae5a));
+ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+box(62, 0.04, 200, 0x7d7a55, 58, 0, 0);            // El Fili ground, drier
+box(170, 0.06, 5, 0xd9c79a, 0, 0, 0);              // east-west road
+box(5, 0.06, 40, 0xd9c79a, 0, 0, 19);              // road to reflection zone
+const hubDisc = new THREE.Mesh(new THREE.CircleGeometry(11, 32), M(0xd9c79a));
+hubDisc.rotation.x = -Math.PI / 2; hubDisc.position.y = 0.07; scene.add(hubDisc);
+
+/* ---------- HUB ---------- */
+sign(['← NOLI ME TANGERE', 'Town of San Diego'], 5, 1.5, -9, 3.2, -4.6, Math.PI / 2, '#2f6b3a', '#fff', true);
+sign(['EL FILIBUSTERISMO →', 'Manila, 13 years later'], 5, 1.5, 9, 3.2, -4.6, -Math.PI / 2, '#7a3b2e', '#fff', true);
+sign(['REFLECTION ZONE', 'straight ahead, south'], 4.4, 1.3, 4.6, 3, 9, Math.PI, '#3d5a80', '#fff', true);
+// Rizal monument
+box(3, 0.6, 3, 0xbdb7a8, 10, 0, -10, true); box(1.2, 5, 1.2, 0xd8d2c2, 10, 0.6, -10);
+const rizalStatue = person({ body: 0x2a2a2a, legs: 0x2a2a2a, skin: 0x8f8a7c, hair: 0x555555 });
+rizalStatue.position.set(10, 0.6, -8.9); scene.add(rizalStatue);
+info(10, -7.5, 'Read about José Rizal', 'Dr. José Rizal (1861–1896)', [
+  'Rizal wrote Noli Me Tangere (published in Berlin, 1887) and El Filibusterismo (published in Ghent, 1891) to show the Filipino people and the world the abuses of Spanish colonial rule.',
+  'The Noli exposes the sickness of society. The Fili asks what should be done about it: patient reform, or revolution?',
+  'El Filibusterismo is dedicated to the three martyred priests Gomez, Burgos and Zamora. Rizal himself was executed at Bagumbayan on December 30, 1896.'
+]);
+
+/* ---------- NOLI ME TANGERE: SAN DIEGO ---------- */
+box(1.2, 7, 1.2, 0xe8dcc0, -28, 0, -4.5, true); box(1.2, 7, 1.2, 0xe8dcc0, -28, 0, 4.5, true);
+box(1.4, 1.2, 10.4, 0xe8dcc0, -28, 7, 0);
+sign(['SAN DIEGO'], 6, 1.1, -27.2, 8.2, 0, Math.PI / 2, '#2f6b3a', '#fff');
+box(30, 0.08, 30, 0xcdbf9c, -55, 0, 0);            // town plaza
+
+// kiosk where the fiesta luncheon is held
+[[-59.5, -4.5], [-50.5, -4.5], [-59.5, 4.5], [-50.5, 4.5]].forEach(p => box(0.4, 5.6, 0.4, 0xf2ead8, p[0], 0, p[1], true));
+box(10.4, 0.35, 10.4, 0xa04a3a, -55, 5.6, 0);
+const kRoof = new THREE.Mesh(new THREE.ConeGeometry(7.2, 2.4, 4), M(0xa04a3a));
+kRoof.position.set(-55, 7.15, 0); kRoof.rotation.y = Math.PI / 4; scene.add(kRoof);
+box(5, 0.9, 1.6, 0x8a5a36, -55, 0, 0.3, true);
+[-1.6, 0, 1.6].forEach(dx => box(0.5, 0.08, 0.5, 0xffffff, -55 + dx, 0.9, 0.3));
+
+// church
+room(-55, -32, 18, 26, 9, 0xe5dccb, 's', 0x9c8f7a, 0x8c4a3a);
+box(5, 14, 5, 0xe5dccb, -67.2, 0, -21.3, true);
+const tRoof = new THREE.Mesh(new THREE.ConeGeometry(4, 3, 4), M(0x8c4a3a));
+tRoof.position.set(-67.2, 15.5, -21.3); tRoof.rotation.y = Math.PI / 4; scene.add(tRoof);
+box(0.3, 2.4, 0.3, 0xffffff, -55, 9.35, -19.3); box(1.4, 0.3, 0.3, 0xffffff, -55, 10.7, -19.3);
+sign(['SIMBAHAN NG SAN DIEGO'], 6, 0.9, -55, 5.4, -18.6, 0, '#5a4030', '#f6ecd6');
+for (let z = -24; z >= -36; z -= 3) { box(5, 0.9, 0.8, 0x6b4a2b, -60.2, 0, z, true); box(5, 0.9, 0.8, 0x6b4a2b, -49.8, 0, z, true); }
+box(5, 1.3, 1.4, 0xf2ead8, -55, 0, -43.4, true); box(0.25, 2.2, 0.25, 0xd4af37, -55, 1.3, -43.6); box(1.2, 0.25, 0.25, 0xd4af37, -55, 2.7, -43.6);
+// Don Rafael's empty grave
+box(0.25, 1.6, 0.25, 0x7b7b7b, -40, 0, -30); box(1, 0.25, 0.25, 0x7b7b7b, -40, 1, -30); box(2, 0.15, 3, 0x5c4a3a, -40, 0, -28.4);
+info(-40, -27, 'Look at the empty grave', 'The empty grave of Don Rafael Ibarra', [
+  'Don Rafael, father of Crisostomo Ibarra, was the richest and most respected man in San Diego. He defended a boy from a Spanish tax collector, the collector died from the fall, and Don Rafael was jailed. He died in prison before he was cleared.',
+  'Padre Damaso called him a heretic and ordered his body dug up and moved to the Chinese cemetery. On a rainy night the gravediggers threw the body into the lake instead.',
+  'Symbol: even in death, a good Filipino was given no peace by those in power.'
+]);
+
+// classroom
+room(-55, 28, 16, 12, 6, 0xe9d8a6, 'n', 0xb08a5a, 0x7a5a3a);
+sign(['PAARALAN (School)'], 5, 0.9, -55, 4.9, 21.6, Math.PI, '#5a4030', '#f6ecd6');
+sign(['"Without education, there is no', 'freedom." A school for San Diego:', 'the dream of Crisostomo Ibarra'], 8, 2.6, -55, 3.6, 33.5, Math.PI, '#1f3d2b', '#f4f4e8');
+[[-59, 26], [-55, 26], [-51, 26], [-59, 29], [-55, 29], [-51, 29]].forEach(p => { box(1.6, 0.75, 0.8, 0x8a5a36, p[0], 0, p[1], true); });
+info(-52, 31.5, 'Read about the school', 'The school of San Diego', [
+  'The town had no real schoolhouse. The schoolmaster taught children beside the parish house, and was forced to teach in Spanish words the children memorised without understanding.',
+  'When he stopped whipping the pupils, they learned better, but Padre Damaso made him go back to the rod.',
+  'Ibarra plans to build a proper school as a memorial to his father. At the laying of its cornerstone, a rigged derrick collapses in an attempt to kill him. Elias saves his life.'
+]);
+
+// lake and Elias's banca
+const lake = new THREE.Mesh(new THREE.CircleGeometry(10, 28), M(0x3f8fc4));
+lake.rotation.x = -Math.PI / 2; lake.position.set(-89, 0.05, 0); scene.add(lake);
+colliders.push({ a: -98, b: -81.5, c: -8, d: 8 });
+box(1.2, 0.5, 4.2, 0x7a5230, -80.4, 0.05, -3);
+
+const NOLI = [
+  { name: 'Crisostomo Ibarra', x: -54.6, z: -1.6, rot: Math.PI / 2, look: { body: 0x1d1d28, legs: 0x1d1d28, hat: 'top' },
+    role: 'Hero of Noli Me Tangere',
+    text: 'Juan Crisostomo Ibarra y Magsalin comes home to San Diego after seven years of study in Europe. He learns that his father, Don Rafael, died in prison. Instead of revenge, he chooses to build a school, because he believes education will free his people. He ends the novel hunted as a rebel for an uprising he never planned.',
+    quote: 'Represents: the educated Filipino youth who believes the country can be reformed peacefully.' },
+  { name: 'Padre Damaso', x: -53, z: -1.6, rot: -Math.PI / 2, look: { robe: 0x6b4a2b, hair: 0x9a9a9a },
+    role: 'Franciscan friar, former parish priest of San Diego',
+    text: 'Loud, proud and cruel. He had Don Rafael\'s body dug up from its grave, he insults Filipinos as "indios", and he blocks the marriage of Ibarra and Maria Clara. At the end the reader learns he is the true father of Maria Clara.',
+    quote: 'Represents: the abuse of power by the friars.' },
+  { name: 'Maria Clara', x: -56.4, z: -1.9, rot: Math.PI / 2, look: { body: 0xf5efe0, skirt: 0xb23a48, longHair: true, skin: 0xe0b38a },
+    role: 'Sweetheart of Ibarra',
+    text: 'Raised as the daughter of Kapitan Tiago, she is gentle, devout and obedient. She is forced to give up Ibarra\'s letter to save her dead mother\'s name. Believing Ibarra has been killed, she refuses to marry Linares and enters the convent of Santa Clara.',
+    quote: 'Often read as a symbol of the Filipina of her time, and of the motherland held captive.' },
+  { name: 'Kapitan Tiago', x: -57.2, z: 2.2, rot: Math.PI / 2, look: { body: 0xe9dfc5, legs: 0x4a3b2a },
+    role: 'Don Santiago de los Santos, rich businessman of Binondo',
+    text: 'He keeps his wealth by pleasing whoever is in power: the friars, the officials, the saints. The moment Ibarra is in trouble, he breaks the engagement and offers Maria Clara to another man.',
+    quote: 'Represents: Filipinos who side with the oppressor to protect their own comfort.' },
+  { name: 'Padre Salvi', x: -55, z: -41, rot: 0, look: { robe: 0x4a3a2a, hair: 0x2a2018, skin: 0xd9b99a },
+    role: 'Parish priest of San Diego',
+    text: 'Thin, quiet and dangerous. He secretly desires Maria Clara. He stages the false uprising and makes it look as if Ibarra led it, so that Ibarra will be arrested and removed.',
+    quote: 'Represents: hidden, scheming abuse behind a holy face.' },
+  { name: 'Basilio (child)', x: -61.5, z: -22.5, rot: Math.PI / 2, look: { body: 0xd8d0c0, legs: 0x5a4a3a, small: true },
+    role: 'Sacristan, elder son of Sisa, about ten years old',
+    text: 'He rings the church bells with his little brother. On the night Crispin is taken, Basilio runs home and is grazed by a Guardia Civil bullet. On Christmas Eve he finds his mother, and she dies in his arms. A dying stranger (Elias) tells him where gold is buried and to use it to study.',
+    quote: 'He returns as a medical student in El Filibusterismo.' },
+  { name: 'Crispin', x: -62.2, z: -21.4, rot: Math.PI / 2, look: { body: 0xd8d0c0, legs: 0x5a4a3a, small: true },
+    role: 'Sacristan, younger son of Sisa, about seven years old',
+    text: 'He is falsely accused of stealing two gold coins from the church. The head sacristan drags him away and beats him. He is never seen again.',
+    quote: 'Represents: innocent children crushed by an unjust system.' },
+  { name: 'Sisa', x: -62, z: 10, rot: 0, look: { body: 0x9a8f80, skirt: 0x6a5a4a, longHair: true },
+    role: 'Mother of Basilio and Crispin',
+    text: 'A loving mother with a gambler husband. When her sons disappear she is arrested by the Guardia Civil and shamed in front of the town. She loses her mind and wanders San Diego singing and searching for her children.',
+    quote: 'Represents: the suffering motherland, robbed of her children.' },
+  { name: 'Elias', x: -77.5, z: -2, rot: Math.PI / 2, look: { body: 0x7a6a4a, legs: 0x4a4030, hat: 'salakot' },
+    role: 'Boatman and fugitive',
+    text: 'Ibarra saves him from a crocodile; Elias repays him many times. He speaks for the poor and asks Ibarra to carry their demands. He burns down nothing, hates no one, and in the end gives his own life so Ibarra can escape on the lake.',
+    quote: '"I die without seeing the dawn brighten over my native land. You, who have it to see, welcome it, and forget not those who have fallen during the night!"' },
+  { name: 'Pilosopo Tasyo', x: -44, z: 24, rot: -Math.PI / 2, look: { body: 0x8a8a7a, legs: 0x5a5a4a, hair: 0xdddddd },
+    role: 'Don Anastasio, the old scholar of San Diego',
+    text: 'The educated call him Don Anastasio the philosopher; the ignorant call him Tasyo the lunatic. He writes in symbols no one can read, because he writes not for his own time but for a future generation that will understand.',
+    quote: 'Represents: wisdom that society ignores.' },
+  { name: 'Doña Victorina', x: -47, z: 5, rot: -Math.PI / 2, look: { body: 0xd45d9a, skirt: 0x8a2be2, hair: 0xb8860b, skin: 0xf0d5c0 },
+    role: 'Wife of Don Tiburcio de Espadaña',
+    text: 'A Filipina who is ashamed of being one. She covers her face in rice powder, wears false curls, speaks broken Spanish and married a poor lame Spaniard just to be called "Doña".',
+    quote: 'Represents: colonial mentality, valuing the foreign and despising one\'s own.' },
+  { name: 'The Schoolmaster', x: -55, z: 31.5, rot: Math.PI, look: { body: 0xf0ead8, legs: 0x3a3a3a },
+    role: 'Teacher of San Diego',
+    text: 'He tells Ibarra his struggles: no schoolhouse, no books, parents who do not see the value of school, and a parish priest who mocks him and orders him to whip the children.',
+    quote: 'Represents: teachers who want to do good but are blocked by the system.' }
+];
+NOLI.forEach(npc);
+const sisa = npcs.find(n => n.d.name === 'Sisa');
+
+keyScene({ id: 'N3', x: -55, z: 3.6, title: 'Ibarra against Padre Damaso: the fiesta luncheon',
+  ref: 'Noli Me Tangere, Chapter 34',
+  context: 'The fiesta of San Diego. Earlier that day, at the laying of the cornerstone of the school, a derrick collapsed in an attempt on the life of Ibarra. The town leaders, the friars and the provincial governor now sit down to eat.',
+  cast: 'Crisostomo Ibarra, Padre Damaso, Maria Clara, Kapitan Tiago',
+  take: 'One moment of anger gives the enemies of Ibarra the weapon they need. Under an unjust system, even defending the honour of a father is made a crime.',
+  lines: [
+  ['Narrator', 'It is the fiesta of San Diego. After the cornerstone of the new school is laid, the important people of the town sit down to a luncheon. Ibarra sits near Maria Clara and Kapitan Tiago.'],
+  ['Padre Damaso', '(arriving late) So this is what happens when an indio goes to Europe. He comes home thinking he is wiser than his priests!'],
+  ['Narrator', 'Ibarra says nothing. He holds his temper while the friar goes on insulting him.'],
+  ['Padre Damaso', 'And we all know how such men end. Their fathers die in jail, without confession, like...'],
+  ['Narrator', 'At the insult to his dead father, Ibarra leaps up, throws Padre Damaso to the ground and raises a knife over him.'],
+  ['Ibarra', 'My father was an honest man! Ask this town. And this priest hounded him, slandered him, and dug up his body from its grave!'],
+  ['Narrator', 'Maria Clara steps between them. Ibarra looks at her, drops the knife, and walks away.'],
+  ['Narrator', 'Result: Ibarra is excommunicated for striking a priest. Kapitan Tiago breaks the engagement. The reformer has become an enemy of the friars.']
+], q: 'Discuss: Was the anger of Ibarra justified? What would you have done?' });
+
+/* ---------- EL FILIBUSTERISMO: MANILA ---------- */
+box(1.2, 7, 1.2, 0x3a2a2a, 28, 0, -4.5, true); box(1.2, 7, 1.2, 0x3a2a2a, 28, 0, 4.5, true);
+box(1.4, 1.2, 10.4, 0x3a2a2a, 28, 7, 0);
+sign(['EL FILIBUSTERISMO'], 7, 1.1, 27.2, 8.2, 0, -Math.PI / 2, '#7a3b2e', '#fff');
+
+// wedding house (former house of Kapitan Tiago)
+room(55, -28, 20, 16, 6.5, 0xd8c9a8, 's', 0x8a5a36, 0x6a3a2a);
+sign(['WEDDING FEAST', 'Paulita Gomez & Juanito Pelaez'], 7, 1.3, 55, 5.3, -19.6, 0, '#5a4030', '#f6ecd6');
+box(10, 0.9, 2, 0xf4f0e6, 55, 0, -30, true);
+const lampGlow = new THREE.Mesh(new THREE.SphereGeometry(0.42, 14, 10), new THREE.MeshBasicMaterial({ color: 0xffd76a }));
+lampGlow.position.set(55, 1.75, -30); scene.add(lampGlow);
+cyl(0.12, 0.3, 0.5, 0xd4af37, 55, 0.9, -30);
+const lampLight = new THREE.PointLight(0xffd27a, 1.1, 16); lampLight.position.set(55, 2.4, -30); scene.add(lampLight);
+info(55, -27.4, 'Examine the lamp', 'Symbol: Simoun\'s lamp', [
+  'A beautiful lamp shaped like a pomegranate: Simoun\'s wedding gift. Inside is nitroglycerin. When its light fades and someone raises the wick, it will explode and set off the gunpowder hidden around the house, killing every official and friar at the feast.',
+  'Symbol: a revolution built on hatred and revenge. It looks like light, but it carries death. It fails because one young man, Isagani, acts out of love.'
+], 2.2);
+
+// underground meeting place
+room(55, 28, 18, 14, 6, 0x4a4540, 'ns', 0x2e2a26, 0x3a3530, { roofH: 0 });
+box(20, 1.2, 16, 0x5f7a45, 55, 6.3, 28);           // earth mound on top
+sign(['UNDERGROUND MEETING PLACE', 'enter quietly'], 6.4, 1.2, 55, 4.9, 20.6, Math.PI, '#1c1917', '#ffb347');
+box(3, 0.9, 1.8, 0x5a4030, 55, 0, 31.5, true);
+[[49, 33], [50.6, 33], [49.8, 33], [61, 33], [61, 31.4]].forEach((p, i) => box(1.4, i === 2 ? 0.01 : 1.1, 1.4, 0x7a5a3a, p[0], 0, p[1], i !== 2));
+box(1.4, 1.1, 1.4, 0x7a5a3a, 49.8, 1.1, 33);
+[[47.2, 23], [62.8, 23], [47.2, 33.5], [62.8, 33.5]].forEach(p => {
+  box(0.15, 1.2, 0.15, 0x3a2a1a, p[0], 2, p[1]);
+  const f = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), new THREE.MeshBasicMaterial({ color: 0xff8a2a }));
+  f.position.set(p[0], 3.35, p[1]); scene.add(f);
+});
+const torch1 = new THREE.PointLight(0xff8a2a, 1.3, 20); torch1.position.set(50, 3.4, 28); scene.add(torch1);
+const torch2 = new THREE.PointLight(0xff8a2a, 1.3, 20); torch2.position.set(60, 3.4, 28); scene.add(torch2);
+info(50, 31, 'Inspect the crates', 'Symbol: the hidden rifles', [
+  'In the novel, Simoun smuggles rifles into Manila and hides them in the warehouse of the Chinese merchant Quiroga. He arms bandits and the discontented, waiting for his signal.',
+  'This underground room is the group\'s creative interpretation of where the plot was planned.'
+], 2.4);
+
+// Kabesang Tales's land
+box(4, 2.6, 4, 0xb08a4a, 40, 0, 15, true);
+const hutRoof = new THREE.Mesh(new THREE.ConeGeometry(3.8, 2.2, 4), M(0x8a6a2a));
+hutRoof.position.set(40, 3.7, 15); hutRoof.rotation.y = Math.PI / 4; scene.add(hutRoof);
+sign(['THIS LAND NOW BELONGS', 'TO THE FRIAR ORDER'], 4.2, 1.3, 44.5, 2.6, 16.5, Math.PI, '#f4f0e6', '#7a1f1f', true);
+
+// students and their petition
+sign(['PETITION', 'Academy of the', 'Spanish Language'], 3.6, 2, 38.5, 3, -10.5, 0, '#f4f0e6', '#1f2d4a', true);
+
+// Pasig river and the Bapor Tabo
+box(26, 0.1, 200, 0x3f7fa8, 101, 0, 0);
+colliders.push({ a: 87.5, b: 200, c: -200, d: 200 });
+box(7, 1.6, 22, 0xf4f0e6, 97, 0.1, -12); box(5.6, 1.5, 15, 0xe2dccb, 97, 1.7, -12);
+cyl(0.7, 0.7, 4, 0x222222, 97, 3.2, -9, 14); cyl(3, 3, 1.2, 0x8a5a36, 93.3, 0.3, -12, 16).rotation.z = Math.PI / 2;
+const tabo = textSprite('BAPOR TABO'); tabo.position.set(97, 8.2, -12); scene.add(tabo);
+info(85.5, -12, 'Look at the Bapor Tabo', 'Symbol: the Bapor Tabo', [
+  'El Filibusterismo opens on this steamship struggling up the Pasig River. It is round like a tabo (a water dipper), heavy, slow, and freshly painted white to look clean and modern.',
+  'On the upper deck sit the friars and officials in comfort. Below deck the Filipinos and Chinese are crowded with the cargo and the heat of the engine.',
+  'Symbol: the colonial government. Proud of itself, going nowhere fast, and divided into those above and those below.'
+], 4);
+box(1.3, 0.8, 0.9, 0x8a6a2a, 85.8, 0, 31.2, true); box(1.1, 0.12, 0.7, 0xffd23f, 85.8, 0.8, 31.2);
+
+const FILI = [
+  { name: 'Simoun', x: 55, z: 29.4, rot: Math.PI, look: { body: 0x2a1a3a, legs: 0x1a1a1a, hair: 0xe8e8e8, hat: 'top' },
+    role: 'The rich jeweller; adviser to the Captain-General',
+    text: 'Behind the blue-tinted glasses and white hair is Crisostomo Ibarra, back after thirteen years. He no longer believes in reform. He encourages the greed and cruelty of the rulers so that the people will finally rise up. He wants two things: to rescue Maria Clara from the convent, and to destroy the system that destroyed him.',
+    quote: 'Represents: revolution driven by personal revenge.' },
+  { name: 'Basilio', x: 51.8, z: 27.2, rot: Math.PI / 2, look: { body: 0x2f3b55, legs: 0x22252e },
+    role: 'Medical student; son of Sisa',
+    text: 'The boy from the Noli grew up as a servant in Kapitan Tiago\'s house and studied his way to the top of his class. He discovers Simoun\'s secret at his mother\'s grave but refuses to join him; he only wants to heal the sick. After he is unjustly jailed and his sweetheart Juli dies, he comes back and says he is ready.',
+    quote: 'Represents: the peaceful, hardworking youth pushed toward violence by injustice.' },
+  { name: 'Kabesang Tales', x: 59, z: 30.6, rot: -Math.PI / 2, look: { body: 0x6a5a3a, legs: 0x3a3020, hat: 'salakot' },
+    role: 'Farmer; later the bandit Matanglawin',
+    text: 'He cleared wild land with his own hands, and lost his wife and a daughter to fever doing it. Once the farm prospered, the friars claimed it and raised the rent every year. He fought them in court and lost. With nothing left, he took a gun and became the outlaw Matanglawin.',
+    quote: 'Represents: farmers robbed of their land, and how injustice makes rebels.' },
+  { name: 'Juli', x: 42.5, z: 11, rot: -Math.PI / 2, look: { body: 0xe8dcc8, skirt: 0x4a6a8a, longHair: true },
+    role: 'Daughter of Kabesang Tales; sweetheart of Basilio',
+    text: 'She becomes a servant to pay her father\'s ransom. When Basilio is jailed she is told only Padre Camorra can help. She goes to the parish house to plead for him, and rather than lose her honour she throws herself from a window and dies.',
+    quote: 'Represents: the innocent and powerless, who pay the highest price.' },
+  { name: 'Isagani', x: 57.6, z: -17, rot: 0, look: { body: 0x3a5a4a, legs: 0x2a2a2a },
+    role: 'Poet and student; nephew of Padre Florentino',
+    text: 'Brave, proud and idealistic. He argues face to face with a friar for the right of students to learn. He loves Paulita Gomez, but she leaves him for the rich Juanito Pelaez. On the night of the wedding he learns of the lamp, runs in, and throws it into the river.',
+    quote: 'Represents: the idealism and conscience of the youth.' },
+  { name: 'Paulita Gomez', x: 53.6, z: -32, rot: 0, look: { body: 0xffffff, skirt: 0xf4f0e6, longHair: true, skin: 0xe6c2a0 },
+    role: 'The bride',
+    text: 'Beautiful and rich, niece of Doña Victorina. She loved Isagani, but after the students are arrested she decides he has no future and marries Juanito Pelaez.',
+    quote: 'Represents: those who choose comfort and safety over principle.' },
+  { name: 'Juanito Pelaez', x: 56.4, z: -32, rot: 0, look: { body: 0x1a1a1a, legs: 0x1a1a1a },
+    role: 'The groom',
+    text: 'The spoiled, hunchbacked son of a rich merchant. A favourite of the professors because he flatters them. He wins Paulita through money and connections, not merit.',
+    quote: 'Represents: privilege rewarded over ability.' },
+  { name: 'Makaraig', x: 40.6, z: -7.6, rot: Math.PI / 2, look: { body: 0x7a2f3a, legs: 0x2a2a2a },
+    role: 'Rich law student; leader of the petition',
+    text: 'He leads the students who ask the government for an academy to teach Spanish, so Filipinos can understand the laws that rule them. The friars block it. When rebellious posters appear, the students are blamed and arrested. Makaraig is freed because he is rich; Basilio, who is poor, stays in jail.',
+    quote: 'Shows: justice that depends on wealth.' },
+  { name: 'Placido Penitente', x: 42.4, z: -9, rot: Math.PI / 2, look: { body: 0x8a7a4a, legs: 0x3a3a2a },
+    role: 'Student from Batangas',
+    text: 'A bright student who slowly loses all interest in school. In the physics class the friar professor mocks and humiliates him instead of teaching. He walks out, and Simoun finds in him an angry young man ready to recruit.',
+    quote: 'Represents: talent wasted by a broken education system.' },
+  { name: 'Padre Florentino', x: 84, z: 30, rot: -Math.PI / 2, look: { robe: 0x1c1c1c, hair: 0xdddddd },
+    role: 'Filipino priest; uncle of Isagani',
+    text: 'The wounded Simoun flees to his house by the sea, takes poison, and confesses his whole story. The priest tells him his plan failed because it was born of hatred and crime; freedom must be earned by a people who are just and worthy of it. Then he throws Simoun\'s chest of jewels into the sea, to be found only when needed for a holy cause.',
+    quote: '"Where are the youth who will consecrate their golden hours, their illusions, and their enthusiasm to the welfare of their native land?"' }
+];
+FILI.push(
+  { name: 'Don Custodio', x: 70, z: 4.6, rot: Math.PI, look: { body: 0x3a3a4a, legs: 0x2a2a2a, hair: 0x888888, hat: 'top' },
+    role: 'Don Custodio de Salazar y Sánchez de Monteredondo, government adviser',
+    text: 'Known in Manila as "Buena Tinta", the man of good authority. Every difficult question lands on his desk, including the petition of the students for an academy of Spanish. He studies it for weeks, asks advice from a lawyer and a dancer, and finally "solves" it by handing the academy to the friars.',
+    quote: 'Represents: officials who look busy, decide slowly, and always end on the side of the powerful.' },
+  { name: 'Ben Zayb', x: 79.5, z: 4.6, rot: Math.PI, look: { body: 0x6a5a2a, legs: 0x2f2a22 },
+    role: 'Journalist of the newspaper El Grito de la Integridad',
+    text: 'He believes he is the only man in Manila who thinks. He writes what pleases the Captain-General and the friars, turns small events into heroic tales, and leaves out whatever would embarrass those in power.',
+    quote: 'Represents: a press that serves power instead of truth.' }
+);
+FILI.forEach(npc);
+
+keyScene({ id: 'F4', x: 55, z: -22.6, title: 'The failed lamp plot at the wedding feast',
+  ref: 'El Filibusterismo, Chapter 35',
+  context: 'Basilio has joined Simoun. The plan: a lamp filled with nitroglycerin will explode at the wedding feast, killing the rulers of the colony, and the blast will be the signal for an armed uprising in the city.',
+  cast: 'Simoun, Basilio, Isagani, Paulita Gomez, Juanito Pelaez, Padre Salvi, the Captain-General',
+  take: 'A revolution built on the revenge of one man is undone by the love of another. Rizal leaves the reader to judge whether that is a tragedy or a mercy.',
+  lines: [
+  ['Narrator', 'The wedding feast of Paulita Gomez and Juanito Pelaez, held in the former house of Kapitan Tiago. The Captain-General, the friars and the richest people of Manila are all at the table.'],
+  ['Narrator', 'Simoun brings his gift: a splendid lamp shaped like a pomegranate. He lights it, places it at the centre, and quietly leaves.'],
+  ['Basilio', '(outside, to Isagani) Get away from this house! That lamp is filled with nitroglycerin. When they raise the wick, everyone inside will die.'],
+  ['Narrator', 'Inside, a note is passed from hand to hand: "Mane, Thecel, Phares. Juan Crisostomo Ibarra." Padre Salvi recognises the handwriting and turns pale.'],
+  ['Captain-General', 'The lamp is going dim. Someone raise the wick.'],
+  ['Narrator', 'Before anyone can touch it, a figure runs in, seizes the lamp, rushes to the balcony and hurls it into the river. It is Isagani. He could not let Paulita die.'],
+  ['Narrator', 'Result: Simoun\'s revolution fails in one moment. He flees, wounded, to the house of Padre Florentino.']
+], q: 'Discuss: Did Isagani do the right thing? Would the country have been better if the lamp had exploded?' });
+
+keyScene({ id: 'F1', x: 55, z: 24.4, title: 'The revolutionary plan of Simoun',
+  ref: 'El Filibusterismo, Chapters 7 and 33',
+  context: 'Thirteen years after the Noli. Visiting the grave of his mother on Christmas Eve, Basilio recognises the jeweller Simoun as Crisostomo Ibarra. Simoun could silence him, but tries to recruit him instead.',
+  cast: 'Simoun, Basilio',
+  take: 'Simoun does not win Basilio with arguments. Injustice does the recruiting for him.',
+  lines: [
+  ['Narrator', 'This scene is the group\'s interpretation, based on the conversations of Simoun and Basilio in the novel.'],
+  ['Simoun', 'You know who I am. Thirteen years ago I believed in schools and petitions. They answered me with prison and a ruined name.'],
+  ['Basilio', 'I only want to finish my studies and heal the sick, señor. That is how I will serve.'],
+  ['Simoun', 'What use is a doctor to a country that is itself dying? You cure one body while a whole people is kept in chains.'],
+  ['Narrator', 'Basilio refuses. Then he is jailed for a crime he did not commit, and Juli dies trying to free him.'],
+  ['Basilio', '(returning) I have been a bad son and a bad brother. I left my dead unavenged. Tell me what to do. I am ready.']
+], q: 'Discuss: What pushed Basilio from reform to revolution? Does that still happen to people today?' });
+
+/* ---------- REFLECTION ZONE ---------- */
+box(28, 0.07, 24, 0xa9c98f, 0, 0, 50);
+box(11.5, 1.4, 1, 0x2f6b3a, -8.25, 0, 38, true); box(11.5, 1.4, 1, 0x2f6b3a, 8.25, 0, 38, true);
+box(1, 1.4, 24, 0x2f6b3a, -14, 0, 50, true); box(1, 1.4, 24, 0x2f6b3a, 14, 0, 50, true);
+box(29, 1.4, 1, 0x2f6b3a, 0, 0, 62, true);
+const pond = new THREE.Mesh(new THREE.CircleGeometry(3, 24), M(0x5aa6d6));
+pond.rotation.x = -Math.PI / 2; pond.position.set(-8, 0.1, 47); scene.add(pond);
+colliders.push({ a: -10.4, b: -5.6, c: 44.6, d: 49.4 });
+box(3, 0.5, 0.9, 0x8a5a36, 8, 0, 44, true); box(3, 0.5, 0.9, 0x8a5a36, 8, 0, 50, true);
+sign(['REFLECTION ZONE', 'a quiet place to think and write'], 6, 1.3, 0, 4.6, 38, Math.PI, '#3d5a80', '#fff');
+box(0.3, 4, 0.3, 0x3d5a80, -3, 0, 38); box(0.3, 4, 0.3, 0x3d5a80, 3, 0, 38);
+
+/* ---------- STORY HALL: bulletin boards with the whole story ---------- */
+const STORY = {
+  noli: { title: 'The whole story: Noli Me Tangere (1887)', pages: [
+    ['1. The return', `Crisostomo Ibarra comes home after seven years of study in Europe. Kapitan Tiago, father of his sweetheart Maria Clara, gives a dinner for him in Binondo. There Padre Damaso, once a guest at his family table, insults him in front of everyone.\n\nThat night Lieutenant Guevara tells him the truth about his father. Don Rafael defended a boy from a Spanish tax collector; the collector fell and died; Don Rafael was jailed, accused of heresy and subversion, and died in prison before he could be cleared.`],
+    ['2. San Diego', `Ibarra visits Maria Clara, then travels to his town of San Diego to visit the grave of his father. The grave is empty. On the order of Padre Damaso the body was dug up to be moved to the Chinese cemetery, and on a stormy night the gravediggers threw it into the lake.\n\nIbarra chooses not to take revenge. He will honour his father by building a school for the town.`],
+    ['3. The poor of San Diego', `Rizal shows the other side of the town through Sisa and her sons. Crispin and Basilio are bell-ringers in the church. Crispin is accused of stealing two gold coins and is beaten by the head sacristan; he is never seen again. Basilio escapes with a bullet wound.\n\nSisa is arrested by the Guardia Civil and paraded through the town. She loses her mind and wanders, searching for her children.`],
+    ['4. Elias and the school', `At a fishing picnic Ibarra saves the boatman Elias from a crocodile. Elias, a fugitive who speaks for the oppressed, becomes his protector.\n\nAt the laying of the cornerstone of the school, a derrick rigged to kill Ibarra collapses. Elias pulls him clear. The man who set the trap is the one who dies.`],
+    ['5. The break with the friars', `At the fiesta luncheon Padre Damaso insults the memory of Don Rafael. Ibarra throws him to the ground and raises a knife; only Maria Clara stops him. Ibarra is excommunicated and his engagement is broken. Kapitan Tiago is told to marry Maria Clara to Linares, a young Spaniard.\n\nThe Captain-General admires Ibarra and has the excommunication lifted, but the enemies of Ibarra are not finished.`],
+    ['6. The false uprising', `Padre Salvi, the new parish priest who secretly desires Maria Clara, arranges an attack on the barracks and makes it appear that Ibarra led it. Ibarra is arrested. A letter he once wrote to Maria Clara is used as evidence against him.\n\nShe gave up that letter under threat: in exchange she received letters of her dead mother which reveal that her real father is Padre Damaso.\n\nElias learns that the great-grandfather of Ibarra was the man who ruined his own family. He still chooses to save him.`],
+    ['7. The ending', `Elias helps Ibarra escape. Ibarra says farewell to Maria Clara and forgives her. On the lake the Guardia Civil give chase; Elias leaps into the water to draw their fire while Ibarra lies hidden in the boat. The authorities believe Ibarra is dead.\n\nOn Christmas Eve Basilio finds Sisa in the forest; she recognises him and dies. The wounded Elias tells the boy to burn their bodies and to dig for buried gold and use it to study. Then he dies, "without seeing the dawn".\n\nMaria Clara, believing Ibarra dead, enters the convent of Santa Clara.`],
+    ['Main ideas', `• A society can be sick like a body, and the first step to a cure is to show the sickness openly.\n• Abuse of power by friars and officials; justice that depends on rank.\n• Education as the hope of the country, and the forces that block it.\n• Colonial mentality (Doña Victorina, Kapitan Tiago).\n• The suffering of the innocent (Sisa, Crispin, Basilio).\n\nThe title is Latin for "Touch me not".`]
+  ] },
+  fili: { title: 'The whole story: El Filibusterismo (1891)', pages: [
+    ['1. Thirteen years later', `The steamship Bapor Tabo struggles up the Pasig River. On the upper deck with the friars and officials sits Simoun, a rich jeweller in blue-tinted glasses, the trusted adviser of the Captain-General.\n\nSimoun is Crisostomo Ibarra. He has returned to rescue Maria Clara from the convent and to destroy the system that destroyed him. His method: encourage the greed and cruelty of the rulers until the people revolt.`],
+    ['2. Basilio discovers the secret', `Basilio, now a medical student raised in the house of Kapitan Tiago, visits the grave of his mother on Christmas Eve and recognises Simoun as the man who helped him bury her thirteen years before.\n\nSimoun spares his life and invites him to join the revolution. Basilio refuses. He wants only to finish his studies and serve by healing.`],
+    ['3. Kabesang Tales', `The farmer Tales clears a piece of forest; his wife and a daughter die of fever in the work. When the land prospers, a friar order claims it and raises the rent year after year. Tales goes to court and loses.\n\nBandits seize him for ransom, and his daughter Juli becomes a servant to pay it. Tales takes the revolver of Simoun, leaving the locket of Juli in payment, kills the friar's land agent and the new tenant, and becomes the bandit Matanglawin.`],
+    ['4. The students', `Makaraig, Isagani and their friends petition for an academy where Filipinos can learn Spanish. The friars oppose it. The matter is given to Don Custodio, who "approves" it by placing it under the control of the friars, which defeats its purpose.\n\nIn the university, the physics class of Placido Penitente shows an education of insults and memorising, where the instruments stay locked in a cabinet.`],
+    ['5. The first plot fails', `Simoun prepares an armed uprising to seize the city and break open the convent of Santa Clara. On the very night it is to begin, he learns that Maria Clara has died. Broken, he gives no signal, and the plot collapses.`],
+    ['6. Posters and prison', `Rebellious posters appear on the doors of the university. The members of the student association are arrested, Basilio among them, though he had no part in it. The rich students are soon released. Basilio, poor and without a protector now that Kapitan Tiago has died, stays in jail.\n\nJuli goes to Padre Camorra to beg for his release. To escape the friar she throws herself from a window of the parish house and dies.\n\nBasilio is finally freed through Simoun. With nothing left, he joins him.`],
+    ['7. The lamp', `At the wedding feast of Paulita Gomez and Juanito Pelaez, attended by the highest officials and friars, Simoun places a lamp filled with nitroglycerin. Its explosion will be the signal for the revolt.\n\nBasilio, pitying his friend, warns Isagani to stay away. Isagani, who still loves Paulita, runs in, seizes the lamp and throws it into the river. The plot is exposed.`],
+    ['8. The ending', `Wounded and hunted, Simoun takes refuge in the house of Padre Florentino by the sea. He drinks poison and confesses his true name and his whole story.\n\nThe priest tells him why he failed: he chose hatred and crime, and God could not bless such means. Freedom must be won by a people made worthy through virtue, sacrifice and love.\n\nSimoun dies. Padre Florentino throws the chest of jewels into the sea, to stay hidden until it is needed for a holy cause.`],
+    ['Main ideas', `• What happens when peaceful reform is refused: the reformer becomes a rebel.\n• Revolution driven by revenge fails; freedom needs a just and prepared people.\n• Corruption in government, the power of the friar orders, a press and schools that serve the rulers.\n• The duty of the youth to their country.\n\n"Filibustero" was the word the authorities used for anyone they considered subversive. The novel is dedicated to the priests Gomez, Burgos and Zamora.`]
+  ] },
+  link: { title: 'How the two novels connect', pages: [
+    ['One story in two parts', `Noli Me Tangere (1887) asks: what is wrong with our society?\nEl Filibusterismo (1891) asks: what should we do about it?\n\nThe Noli is a romance and a social portrait, full of colour and humour. The Fili is darker, angrier and political.`],
+    ['The same people, thirteen years on', `• Crisostomo Ibarra, the hopeful reformer, returns as Simoun, the bitter revolutionary.\n• Basilio, the frightened child sacristan, returns as a medical student.\n• Maria Clara remains in the convent until her death.\n• Kapitan Tiago declines into opium and dies.\n• Padre Salvi rises in rank; he is the one who recognises the handwriting of Ibarra at the feast.\n• The gold that Elias told Basilio to dig up became the fortune of Simoun.`],
+    ['Reform versus revolution', `In the Noli, Ibarra argues for patient reform and Elias speaks for the suffering people. By the end they have almost exchanged positions.\n\nIn the Fili, Simoun tries revolution through corruption and violence, and fails twice.\n\nPadre Florentino gives what many readers take as the judgment of Rizal himself: independence is not won by the sword alone but by a people who deserve it. Without that, "the slaves of today will be the tyrants of tomorrow".`],
+    ['Why they still matter', `The novels awakened national feeling among Filipinos and helped inspire the Revolution of 1896. Rizal was executed on December 30, 1896.\n\nUse the discussion booths in both worlds to test each idea against the present day: abuse of power, unequal justice, education, corruption, and the role of the youth.`]
+  ] }
+};
+box(18, 0.1, 10.5, 0xcbb994, 0, 0, -25);
+box(18, 6, 0.5, 0xe5dccb, 0, 0, -30, true);
+box(0.5, 6, 6, 0xe5dccb, -9, 0, -27, true); box(0.5, 6, 6, 0xe5dccb, 9, 0, -27, true);
+[[-8.6, -20.2], [8.6, -20.2]].forEach(p => box(0.5, 6, 0.5, 0xf2ead8, p[0], 0, p[1], true));
+box(19.6, 0.35, 12, 0x8c4a3a, 0, 6, -25); hipRoof(0, -25, 20.4, 12.8, 6.35, 2.6, 0x8c4a3a);
+sign(['AKLATAN · STORY HALL', 'the whole story of both novels'], 8, 1.25, 0, 5.2, -19.8, 0, '#5a4030', '#f6ecd6');
+box(4, 0.06, 6, 0xd9c79a, 0, 0, -17);
+[['noli', -5.9, '#2f6b3a', ['BULLETIN BOARD', 'NOLI ME TANGERE', 'the whole story', 'in 7 parts', 'press E to read']],
+ ['link', 0, '#3d5a80', ['BULLETIN BOARD', 'HOW THE TWO', 'NOVELS CONNECT', 'press E to read']],
+ ['fili', 5.9, '#7a3b2e', ['BULLETIN BOARD', 'EL FILIBUSTERISMO', 'the whole story', 'in 8 parts', 'press E to read']]
+].forEach(b => {
+  sign(b[3], 5, 3.4, b[1], 3, -29.6, 0, b[2], '#fff');
+  interact.push({ x: b[1], z: -27, r: 2.9, mh: 5.6, label: 'Read ' + STORY[b[0]].title, open: () => showScene(STORY[b[0]]) });
+});
+bench(-5.9, -22.6, true); bench(5.9, -22.6, true);
+
+/* ---------- portals between the worlds ---------- */
+portal(-9, 5.5, Math.PI / 2, 0x4caf50, 'Noli Me Tangere', [-33, 0, -Math.PI / 2]);
+portal(9, 5.5, Math.PI / 2, 0xe0533a, 'El Filibusterismo', [33, 0, Math.PI / 2]);
+portal(-31, 7.5, Math.PI / 2, 0x5aa6d6, 'Central Plaza', [0, 4, Math.PI]);
+portal(31, 7.5, Math.PI / 2, 0x5aa6d6, 'Central Plaza', [0, 4, Math.PI]);
+portal(-36, 3, Math.PI / 2, 0xe0533a, 'El Filibusterismo', [33, 0, Math.PI / 2]);
+portal(36, 3.5, Math.PI / 2, 0x4caf50, 'Noli Me Tangere', [-33, 0, -Math.PI / 2]);
+
+/* ---------- SAN DIEGO expanded: courtyard, town hall, houses, market ---------- */
+box(22, 0.07, 4.4, 0xbfb39a, -55, 0, -17.1);                 // church steps
+box(5, 0.06, 7.4, 0xd9c79a, -55, 0, 18.6);                   // street to the school
+box(13, 0.07, 26, 0xbfb39a, -39.2, 0, -33.5);                // church courtyard and cemetery
+box(0.6, 1.1, 26, 0xcfc6b0, -32.7, 0, -33.5, true); box(13, 1.1, 0.6, 0xcfc6b0, -39.2, 0, -46.5, true);
+box(1.6, 0.6, 1.6, 0xbdb7a8, -39.5, 0, -24, true); box(0.35, 3, 0.35, 0xbdb7a8, -39.5, 0.6, -24); box(1.5, 0.35, 0.35, 0xbdb7a8, -39.5, 2.6, -24);
+bench(-44.4, -37, false); bench(-44.4, -42, false);
+sign(['CHURCH COURTYARD', 'cemetery and reflection garden'], 5.4, 1.2, -39.5, 3.7, -20.9, 0, '#2f6b3a', '#fff', true);
+palm(-43.5, -45); palm(-34.5, -44.5); palm(-34.5, -23);
+
+room(-36, -14, 12, 10, 6, 0xe6d9bd, 's', 0x8a5a36, 0x8c4a3a);   // house of Kapitan Tiago
+sign(['HOUSE OF KAPITAN TIAGO'], 6, 0.85, -36, 4.9, -8.6, 0, '#5a4030', '#f6ecd6');
+box(6, 0.9, 1.8, 0x6b4a2b, -36, 0, -15.6, true); box(6.2, 0.06, 2, 0xf4f0e6, -36, 0.9, -15.6);
+[-2, 0, 2].forEach(dx => { box(0.6, 0.5, 0.6, 0x8a5a36, -36 + dx, 0, -17.1); cyl(0.25, 0.18, 0.18, 0xffffff, -36 + dx, 0.96, -15.6, 10); });
+const chandelier = new THREE.Mesh(new THREE.SphereGeometry(0.35, 10, 8), new THREE.MeshBasicMaterial({ color: 0xffe9a8 }));
+chandelier.position.set(-36, 4.9, -15); scene.add(chandelier);
+sign(['Portrait:', 'Kapitan Tiago'], 1.6, 2, -41.6, 3, -15, Math.PI / 2, '#3a2a1e', '#e8c98a');
+sign(['Portrait:', 'Maria Clara'], 1.6, 2, -30.4, 3, -15, -Math.PI / 2, '#3a2a1e', '#e8c98a');
+
+house(-76, 24, 12, 10, { label: 'TRIBUNAL · TOWN HALL', face: 'n', stone: 0xe6dcc4 });
+info(-79, 17.4, 'Read about the town hall', 'The tribunal (town hall) of San Diego', [
+  'The tribunal was the seat of the gobernadorcillo, the Filipino town mayor. In San Diego he is a man who "commands nothing and obeys everyone".',
+  'Rizal says the real rulers of the town are two: the parish priest, and the alferez who commands the Guardia Civil. They quarrel with each other, but the townspeople obey both.',
+  'In the town hall meeting about the fiesta (Chapter 20), the young men win the vote for a simple, useful celebration. Then the mayor announces that the parish priest has already decided otherwise. The vote meant nothing.',
+  'Symbol: a local government with titles but no power.'
+], 2.4);
+house(-34, 26, 10, 9, { label: 'HOUSE OF THE IBARRAS', face: 'w' });
+info(-41, 28.6, 'Read about the Ibarra family', 'The house of the Ibarra family', [
+  'Three generations built the fortune of the family: the Basque Don Pedro Eibarramendia, his son Don Saturnino who cleared the land of San Diego, and Don Rafael, the most respected man in town.',
+  'After the false uprising, Elias burns the papers in this house so they cannot be used against Ibarra. The house is lost to the flames.',
+  'Elias also discovers here that Don Pedro Eibarramendia was the man whose false accusation destroyed his own grandfather. He chooses not to take revenge on the great-grandson.'
+], 2.4);
+house(-78, -24, 9, 9, { label: 'HOUSE OF DON FILIPO', face: 'e' });
+house(-78, -37, 9, 8, { label: 'ANCESTRAL HOUSE', face: 'e', wood: 0x7a4f2e });
+house(-26, -36, 10, 9, { label: 'ANCESTRAL HOUSE', face: 's', wood: 0x7a4f2e });
+info(-71.8, -24, 'Read about the houses', 'Bahay na bato: the houses of the town', [
+  'Well-off families of the Spanish period lived in the bahay na bato ("house of stone"): a stone ground floor for storage and carriages, and a wooden upper floor where the family lived, with wide sliding windows of capiz shell and a tiled roof.',
+  'This is the house of Don Filipo Lino, the deputy mayor and leader of the liberal young men of the town. He resigns in protest against the abuses of the Guardia Civil, and is later arrested with Ibarra.',
+  'The poor, like Sisa, lived outside the town in huts of bamboo and nipa.'
+], 2.4);
+stall(-69, -10, 0xc0392b); stall(-69, -5.6, 0x2e86ab); stall(-69, 5.6, 0xe1a730);
+info(-66.6, -7.8, 'Look at the market', 'The market and the fiesta', [
+  'The plaza and its market are where the whole town meets: vendors, gossips, gamblers, churchgoers and officials.',
+  'For the fiesta of San Diego in November the town spends heavily on fireworks, bands, theatre and food, much of it on the orders of the parish priest. Pilosopo Tasyo calls it throwing money away while the town has no school.'
+], 2.2);
+cyl(1, 1, 0.9, 0xbdb7a8, -47.5, 0, -11.5, 14); cyl(0.8, 0.8, 0.1, 0x3f8fc4, -47.5, 0.86, -11.5, 14);
+colliders.push({ a: -48.5, b: -46.5, c: -12.5, d: -10.5 });
+[[-69.5, -14.5], [-40.5, -14.5], [-69.5, 14.5], [-40.5, 14.5]].forEach(p => lampPost(p[0], p[1]));
+bench(-62, -13.6, true); bench(-48, 13.6, true);
+palm(-78, 9.5); palm(-79.5, -9.5); palm(-33, 9.8); palm(-33, -5.8); palm(-48.5, 17.4); palm(-60.5, 18);
+
+keyScene({ id: 'N1', x: -36, z: -11.6, title: 'Ibarra returns: the gathering at the house of Kapitan Tiago',
+  ref: 'Noli Me Tangere, Chapters 1 to 4',
+  context: 'Late October. Kapitan Tiago gives a dinner for a young man just back from seven years in Europe. In the novel this takes place at his house on Anloague Street in Binondo, Manila; this room recreates it.',
+  cast: 'Crisostomo Ibarra, Kapitan Tiago, Padre Damaso, Padre Sibyla, Lieutenant Guevara, Doña Victorina',
+  take: 'On his first night home, Ibarra meets the two forces that will decide his fate: the pride of the friars, and the silence of those who know the truth.',
+  lines: [
+    ['Narrator', 'The guests are friars, soldiers and society ladies. Padre Damaso loudly declares that the indios are lazy and ungrateful.'],
+    ['Kapitan Tiago', 'Gentlemen, I present Don Crisostomo Ibarra, son of my late friend Don Rafael.'],
+    ['Ibarra', '(offering his hand) Padre Damaso! The old friend of my father, who so often sat at our table.'],
+    ['Padre Damaso', 'You are mistaken. I was never a close friend of your father. (He turns away.)'],
+    ['Narrator', 'At dinner the friar is served only the neck and wing of the chicken in the tinola, while Ibarra receives the best pieces. Damaso mocks what Ibarra learned abroad. Ibarra answers politely and takes his leave.'],
+    ['Lieutenant Guevara', '(in the street) Young man, be careful. Your father died in prison. He was an honest man, and he had powerful enemies.']
+  ], q: 'Discuss: Ibarra stayed polite when insulted. Was that strength or weakness?' });
+keyScene({ id: 'N2', x: -62, z: 13.5, title: 'The tragedy of Sisa and her sons',
+  ref: 'Noli Me Tangere, Chapters 15 to 21, and 63',
+  context: 'Basilio and Crispin are bell-ringers in the church. Their mother Sisa lives in a hut outside the town and waits for them with a supper she has saved for days to prepare.',
+  cast: 'Sisa, Basilio, Crispin, the head sacristan, the Guardia Civil',
+  take: 'The poor had no protector: the church accused, the soldiers punished, and no one answered for it. Rizal makes the reader feel injustice through a mother.',
+  lines: [
+    ['Crispin', 'They say I stole two gold coins. They will not let me go home until I pay.'],
+    ['Narrator', 'The head sacristan drags Crispin away. Basilio escapes down the bell rope and runs home in the dark, a bullet grazing his head.'],
+    ['Sisa', '(next morning, at the parish house) Where is my Crispin? They tell me he ran away, and that the soldiers are looking for both my boys.'],
+    ['Narrator', 'The Guardia Civil arrest Sisa instead and march her through the town like a criminal. Released, she runs home, finds a torn and bloodied piece of the shirt of Basilio, and her mind breaks.'],
+    ['Sisa', '(wandering, singing) Basilio... Crispin...'],
+    ['Narrator', 'On Christmas Eve Basilio finds her at last in the forest. For one moment she knows him, embraces him, and dies.']
+  ], q: 'Discuss: Who protects the poor when both church and state fail them? Who protects them today?' });
+keyScene({ id: 'N4', x: -77.5, z: 3.9, title: 'Elias and Ibarra on the lake',
+  ref: 'Noli Me Tangere, Chapters 49, 50 and 61',
+  context: 'Elias takes Ibarra out on the lake so they can speak unheard. He carries the requests of the persecuted and asks Ibarra, who has influence, to speak for them.',
+  cast: 'Elias, Crisostomo Ibarra',
+  take: 'The two friends hold the two answers Rizal weighs in both novels, and by the end they have exchanged places. Neither answer is simple.',
+  lines: [
+    ['Elias', 'The people ask for reforms: fewer abuses by the Guardia Civil, less power for the friar orders, respect for the dignity of a man.'],
+    ['Ibarra', 'These institutions are a necessary evil. To weaken them now would bring disorder. Change must come slowly, through education.'],
+    ['Elias', 'You have not suffered as they have. You were raised in comfort, and you see from the height of your position.'],
+    ['Narrator', 'Later, betrayed and jailed, Ibarra is freed by Elias. Now it is Ibarra who speaks of revolt, and Elias who warns him that the innocent would suffer most.'],
+    ['Narrator', 'Pursued on the lake, Elias leaps into the water to draw the gunfire away from the boat where Ibarra lies hidden.']
+  ], q: 'Discuss: Who was right on the lake, Elias or Ibarra? How did suffering change their views?' });
+
+/* ---------- MANILA expanded: street, university, prison, secret room, retreat ---------- */
+box(22, 0.07, 9, 0x8f8a80, 76.5, 0, 0);                          // cobbled street
+house(70, -9.5, 8, 7, { label: 'BAZAAR OF QUIROGA', face: 's', stone: 0xc9bfa8, wood: 0x5a3a2a, roof: 0x5a2a22 });
+house(70, 9.5, 8, 7, { label: 'OFFICE OF DON CUSTODIO', face: 'n', stone: 0xc9bfa8, wood: 0x5a3a2a, roof: 0x5a2a22 });
+house(79.5, 9.5, 8, 7, { label: 'EL GRITO DE LA INTEGRIDAD', face: 'n', stone: 0xc9bfa8, wood: 0x6a4630, roof: 0x5a2a22 });
+[[66.5, -3.9], [76, -3.9], [85, 4], [66, 4]].forEach(p => lampPost(p[0], p[1]));
+info(73.2, -5, 'Read about the bazaar', 'The bazaar of Quiroga', [
+  'Quiroga is a rich Chinese merchant who dreams of opening a consulate for his nation. He owes Simoun a large sum.',
+  'Simoun uses that debt: Quiroga must hide crates of rifles in his warehouse. If they are found, the blame can be thrown on whoever Simoun chooses.',
+  'Symbol: how money and favours tie business to corruption.'
+], 2.2);
+house(35, -24, 9, 9, { label: 'UNIVERSIDAD', face: 's', stone: 0xc9bfa8, wood: 0x5a3a2a, roof: 0x5a2a22 });
+sign(['POSTERS FOUND ON', 'THE UNIVERSITY DOORS', 'Students arrested'], 3.4, 1.9, 31.5, 2.6, -18.6, 0, '#f4f0e6', '#7a1f1f', true);
+info(35, -17.4, 'Read about the university', 'The university and the physics class', [
+  'In the physics class of Padre Millon the students recite the textbook from memory. The laboratory instruments are kept behind glass, shown to visitors and never used.',
+  'When Placido Penitente is mocked and marked absent while standing in front of the professor, he answers back and walks out for good.',
+  'Later, rebellious posters (pasquinades) are found on the university doors. The students who asked for an academy of Spanish are blamed and arrested.',
+  'Symbol: an education designed to keep students obedient rather than to make them think.'
+], 2.4);
+house(73, 23, 8, 7, { label: 'CARCEL · PRISON', face: 'w', stone: 0x77736b, wood: 0x5c5952, roof: 0x3a3530 });
+info(67, 23, 'Read about the prison', 'The prison', [
+  'After the posters are found, the students are jailed. One by one the rich are released through relatives and patrons.',
+  'Basilio, who had nothing to do with the posters, is the last one left. He is poor, and Kapitan Tiago, his only protector, has just died.',
+  'Symbol: justice that asks who you know, not what you did. Compare Don Rafael in the Noli, who also died waiting in a cell.'
+], 2.4);
+
+room(55, 40.5, 10, 11, 6, 0x3a3632, '', 0x24211e, 0x3a3530, { skip: 'n', roofH: 0 });   // secret room behind the meeting place
+box(12, 1.2, 12, 0x5f7a45, 55, 6.3, 41);
+sign(['SECRET ROOM'], 3, 0.7, 55, 4.5, 34.6, Math.PI, '#1c1917', '#ffb347');
+sign(['THE PLAN', '1. The lamp explodes at the feast', '2. The blast is the signal', '3. Arms from the warehouse', '4. Matanglawin enters the city'], 6.4, 3, 55, 3.3, 45.6, Math.PI, '#2a2420', '#ffcf87');
+box(3.4, 0.9, 2, 0x4a3524, 55, 0, 42.4, true);
+const secretLamp = new THREE.Mesh(new THREE.SphereGeometry(0.3, 12, 8), new THREE.MeshBasicMaterial({ color: 0xffc36a }));
+secretLamp.position.set(55, 1.45, 42.4); scene.add(secretLamp); cyl(0.1, 0.22, 0.3, 0xd4af37, 55, 0.9, 42.4);
+const secretLight = new THREE.PointLight(0xffc36a, 1, 14); secretLight.position.set(55, 3, 41); scene.add(secretLight);
+box(1.3, 0.8, 0.9, 0x8a6a2a, 51.6, 0, 44.6, true); box(1.1, 0.12, 0.7, 0xffd23f, 51.6, 0.8, 44.6);
+info(55, 39.6, 'Study the plan', 'The secret room: two plots', [
+  'First plot: Simoun arms the outlaws and the discontented and plans to seize the city and break open the convent of Santa Clara. On the night it is to begin he learns Maria Clara has died. He gives no signal, and the plot collapses.',
+  'Second plot: the lamp at the wedding feast. Its explosion is the signal. Basilio is to lead the people to the warehouse of Quiroga for the hidden rifles, while the men of Matanglawin enter the city.',
+  'This room is the creative interpretation of the group. In the novel the planning happens in the house of Simoun.'
+], 2.4);
+
+box(14, 0.07, 10, 0xb9c7b0, 78, 0, 33);                          // retreat of Padre Florentino
+sign(['RETREAT OF PADRE FLORENTINO', 'reflection zone by the sea'], 5.6, 1.2, 70.6, 3.6, 33, -Math.PI / 2, '#3d5a80', '#fff', true);
+bench(74, 30, true); bench(80, 30.2, true); palm(71.5, 37.5); palm(85, 37);
+
+keyScene({ id: 'F2', x: 37.5, z: -5.4, title: 'The students and the Academy of Spanish',
+  ref: 'El Filibusterismo, Chapters 14, 15 and 27',
+  context: 'A group of students has petitioned the government for an academy where Filipinos can learn Spanish, the language of the laws and the courts. They have even offered to pay for it themselves.',
+  cast: 'Makaraig, Isagani, Sandoval, Pecson, Juanito Pelaez, Señor Pasta, Padre Fernandez',
+  take: 'A peaceful, legal request for education is treated as a threat. Rizal shows how a government that fears learning pushes its youth toward rebellion.',
+  lines: [
+    ['Makaraig', 'Good news! The matter is in the hands of Don Custodio. We need only a word from Señor Pasta, the lawyer he listens to.'],
+    ['Pecson', 'And if they approve it but give it to the friars to manage? Then we pay, and they rule.'],
+    ['Narrator', 'Isagani visits Señor Pasta. The old lawyer advises him to study, marry well, and leave the problems of the country alone.'],
+    ['Isagani', 'When I am old, I want to look back and see that I did something for my country.'],
+    ['Narrator', 'The decision arrives: the academy is "approved", under the control of the friars. Soon after, rebellious posters appear at the university and the students are arrested.'],
+    ['Isagani', '(to Padre Fernandez) You make us what we are, Padre, and then you blame us for it.']
+  ], q: 'Discuss: Why would a government be afraid of students who want to learn? Does this still happen?' });
+keyScene({ id: 'F3', x: 46, z: 11.5, title: 'The struggle of Kabesang Tales',
+  ref: 'El Filibusterismo, Chapters 4 and 10',
+  context: 'Tales is an honest farmer, chosen as cabeza de barangay for his hard work. This hut and field stand for the land he cleared from wild forest with his own hands.',
+  cast: 'Kabesang Tales, his father Tandang Selo, his daughter Juli, Simoun',
+  take: 'Tales obeyed every law and lost everything by it. Rizal shows that outlaws are made, not born.',
+  lines: [
+    ['Narrator', 'Tales clears a piece of forest. His wife and eldest daughter die of fever in the work. When the fields finally prosper, a friar order claims the land and charges rent.'],
+    ['Kabesang Tales', 'I paid. Each year they raised it. When I refused, they said they would give my fields to another.'],
+    ['Narrator', 'He goes to court. The judges, afraid for their posts, rule for the friars. Tales guards his fields with a shotgun, then a bolo, then an axe, as each is forbidden. Bandits seize him for ransom.'],
+    ['Juli', 'I will sell everything I own, and serve Hermana Penchang for the rest. (She keeps only her locket.)'],
+    ['Narrator', 'Simoun lodges in their house and shows his revolver. By morning it is gone. In its place lies the locket of Juli and a note.'],
+    ['Kabesang Tales', '(the note) Forgive me. I need the weapon, and I leave the locket in payment. I am joining the outlaws.'],
+    ['Narrator', 'That night the land agent of the friars and the new tenant are found dead.']
+  ], q: 'Discuss: Tales tried the courts first. What should a citizen do when the law itself is unjust?' });
+
+/* ---------- conversations: what each character answers when asked ---------- */
+const TALK = {
+  'Crisostomo Ibarra': { traits: 'idealistic, well educated, patient, loyal to the memory of his father', ask: [
+    ['Why build a school instead of taking revenge?', 'Revenge would end with me. A school goes on teaching long after I am gone. I want the memory of my father honoured by something that gives life.'],
+    ['What do you want for the country?', 'Reform, step by step. Let the people be educated first. Freedom given to the unprepared can be taken back as easily as it was given.']] },
+  'Padre Damaso': { traits: 'arrogant, hot-tempered, used to being obeyed', ask: [
+    ['Why do you dislike Ibarra?', 'His father would not bow, and the son comes back from Europe full of ideas. A town that reads is a town that stops obeying.'],
+    ['Why do you oppose the marriage?', 'I will not see Maria Clara tied to a man the government may one day hunt. I act for her happiness, in my own way.']] },
+  'Maria Clara': { traits: 'gentle, devout, obedient, self-sacrificing', ask: [
+    ['Why did you give up the letter of Ibarra?', 'They held the letters of my mother over me. To protect her name, and the man I called father, I surrendered the one thing I should have kept.'],
+    ['Why the convent?', 'They told me Crisostomo was dead. I gave them my answer: the convent or the grave.']] },
+  'Kapitan Tiago': { traits: 'wealthy, eager to please, fearful, outwardly pious', ask: [
+    ['How do you stay in favour with everyone?', 'I give: masses to the saints, dinners to the friars, gifts to the officials. A man who offends no one keeps what he has.'],
+    ['Why did you break the engagement?', 'Ibarra is excommunicated! Should I lose my soul and my business for a son-in-law?']] },
+  'Padre Salvi': { traits: 'quiet, cunning, cold, obsessive', ask: [
+    ['What happened on the night of the uprising?', 'I warned the alferez in time, as any loyal servant of Spain would. If the attackers shouted the name of Ibarra, that is not my doing.'],
+    ['How do you rule the town?', 'Not by shouting like my predecessor. Fines, sermons and patience do more than a cane.']] },
+  'Basilio (child)': { traits: 'responsible, brave, loving, forced to grow up early', ask: [
+    ['What is your dream?', 'To stop being a sacristan. I will herd cattle for Don Crisostomo, Crispin can study with old Tasyo, and Mother will not have to sew late into the night.'],
+    ['What happened to Crispin?', 'They said he stole two gold coins. He did not. They took him upstairs and I heard him cry out. I never saw him again.']] },
+  'Crispin': { traits: 'innocent, frightened, affectionate', ask: [
+    ['Did you take the money?', 'No! I told them. They want me to pay back two gold coins. We earn two pesos a month. How can I ever pay?'],
+    ['What do you wish for?', 'I wish we were home with Mother. She saved supper for us tonight.']] },
+  'Sisa': { traits: 'loving, patient, long-suffering', ask: [
+    ['Who are you looking for?', 'My Basilio, my Crispin. Have you seen them? They are good boys. They are not thieves.'],
+    ['What did the soldiers do?', 'They marched me through the town between two guards, in daylight, for all to see. I had done nothing. After that I remember little.']] },
+  'Elias': { traits: 'brave, selfless, thoughtful, bound by gratitude and honour', ask: [
+    ['What do the people ask for?', 'Respect for human dignity, less power for the friars and the Guardia Civil, and justice that is not for sale. I asked Ibarra to carry that voice to those who rule.'],
+    ['Why help Ibarra, whose ancestor ruined your family?', 'I learned what his great-grandfather did to mine, and I wanted to hate him. But he is not guilty of the crime of another man, and the country needs him more than I need revenge.']] },
+  'Pilosopo Tasyo': { traits: 'wise, eccentric, sharp-tongued, far-sighted', ask: [
+    ['Why write in symbols nobody can read?', 'So that this generation cannot burn my books. I write for those who will come later and say: not everyone slept in the night of our grandfathers.'],
+    ['What advice did you give Ibarra?', 'Bend your head to the storm as the reed does. Win over the priest and the officials first, or your school will die before it is built.']] },
+  'Doña Victorina': { traits: 'vain, loud, ambitious, ashamed of her roots', ask: [
+    ['Why do you dress and speak this way?', 'Because I am more Spanish than the Spaniards! Do not dare call me an india.'],
+    ['What do you think of the people here?', 'So backward. In the Peninsula, where I have never been... I mean, where I belong, things are different.']] },
+  'The Schoolmaster': { traits: 'dedicated, humble, discouraged but still hopeful', ask: [
+    ['What is your greatest difficulty?', 'I have no schoolhouse. I teach beside the parish house, and the priest scolds me when the children are loud. They memorise Spanish words whose meaning no one has taught them.'],
+    ['What happened when you stopped whipping the pupils?', 'They came to school gladly and learned faster. Then I was told the rod is the old way and the right way, and I had to take it up again.']] },
+  'Simoun': { traits: 'cunning, bitter, patient, driven by revenge and lost love', ask: [
+    ['Why encourage the corruption you hate?', 'I make the rot worse so the body will finally feel its sickness. A people that suffers enough will rise.'],
+    ['What do you say to the students who ask to learn Spanish?', 'You ask for one more language in a country that cannot yet speak with one voice. Develop your own tongue and your own mind. A people keeps its freedom while it keeps its language.']] },
+  'Basilio': { traits: 'hardworking, cautious, grateful, slow to anger', ask: [
+    ['Why did you refuse Simoun at first?', 'Science will outlast politics. I thought: let me heal the sick and leave vengeance alone. It will not bring back my mother or my brother.'],
+    ['What changed your mind?', 'I was jailed for posters I never wrote. When I came out, Juli was dead and my studies were lost. I had nothing left to protect.']] },
+  'Kabesang Tales': { traits: 'hardworking, stubborn, proud, pushed beyond patience', ask: [
+    ['Why not simply pay the rent?', 'I paid, and each year they asked more. I buried my wife and daughter clearing that land. I will give it up only to the man who first waters it with his own blood.'],
+    ['Why did you take the revolver?', 'The court took my land and the bandits took my freedom. I left the locket in payment and took the gun. I needed it more than gold.']] },
+  'Juli': { traits: 'devoted, hardworking, modest, self-sacrificing', ask: [
+    ['Why did you become a servant?', 'Father was held for ransom. I sold my jewels, all but the locket Basilio gave me, and borrowed the rest by going into service.'],
+    ['What were you afraid of?', 'The parish house. Everyone said only the friar could free Basilio. I knew the price he would ask.']] },
+  'Isagani': { traits: 'idealistic, eloquent, proud, impulsive', ask: [
+    ['What do you say to those who tell you to stay quiet?', 'When my hair is grey, I want to look back and see that I worked for my country and not only for myself.'],
+    ['Do you regret throwing the lamp?', 'Some nights I do. I thought only of Paulita. Had I stopped to think of everything else that lamp might have ended... I still do not know my answer.']] },
+  'Paulita Gomez': { traits: 'charming, practical, fond of comfort', ask: [
+    ['Why not Isagani?', 'He is brave, but he offends the powerful. A woman must think of her future. Juanito will inherit a business.'],
+    ['What do you hope for?', 'A quiet, comfortable life, good society, and no trouble with the authorities.']] },
+  'Juanito Pelaez': { traits: 'mischievous, flattering, cowardly', ask: [
+    ['How do you pass your classes?', 'A joke for the professor, a gift at the right time. Why study when one can be liked?'],
+    ['What do you think of the petition of the students?', 'When it looked safe, I cheered for it. When the arrests began, I had never heard of it.']] },
+  'Makaraig': { traits: 'generous, confident, a natural leader', ask: [
+    ['Why an academy of Spanish?', 'The laws, the courts and the offices all speak Spanish. If we cannot speak it, we cannot defend ourselves. We even offered to pay for the school.'],
+    ['What became of the petition?', 'They "approved" it by handing it to the friars, the same men who opposed it. We were given a defeat dressed as a victory.']] },
+  'Placido Penitente': { traits: 'intelligent, quiet, proud, easily wounded', ask: [
+    ['What happened in the physics class?', 'The professor marked me absent though I stood before him, mocked the way I speak, and called it a lesson. I told him he had no right to insult me, and I walked out.'],
+    ['Why are you bitter?', 'I came from Batangas eager to learn. Four years later I have learned only how to answer the roll call.']] },
+  'Padre Florentino': { traits: 'humble, wise, compassionate, patriotic', ask: [
+    ['Why did the plan of Simoun fail?', 'Because he chose means that God could not bless. Hatred creates only monsters. Only love brings forth wonderful works.'],
+    ['How will the country be free?', 'By deserving it: by loving justice and dignity enough to die for them. Without that, why give a people independence? The slaves of today would be the tyrants of tomorrow.']] },
+  'Don Custodio': { traits: 'self-important, busy-looking, indecisive', ask: [
+    ['What did you decide about the academy?', 'After long study and many consultations I found the perfect solution: approve it, and place it under the care of the friars. Everyone is satisfied.'],
+    ['How do you see the Filipinos?', 'They have aptitude, certainly, but they must not be given ideas above their station. I say this as their protector.']] },
+  'Ben Zayb': { traits: 'vain, imaginative, obedient to power', ask: [
+    ['How do you choose what to print?', 'I print what the Captain-General would enjoy reading. Facts are raw material. A writer improves them.'],
+    ['What did you write about the lamp?', 'A splendid article on the heroism of the authorities. It was forbidden before it could be printed. Officially, nothing happened that night.']] }
+};
+
+/* ---------- places: used by the travel menu and the guided walkthrough ---------- */
+const PLACES = [
+  { w: 'Central', n: 'Central Plaza and title board', x: 0, z: 3, yaw: Math.PI, tip: 'Introduce the group and the roles of each member.' },
+  { w: 'Central', n: 'Story Hall', x: 0, z: -19, yaw: Math.PI, tip: 'Three bulletin boards tell the whole story of both novels.' },
+  { w: 'Noli Me Tangere', n: 'Town plaza and kiosk', x: -55, z: 9.5, yaw: Math.PI, tip: 'Meet Ibarra, Padre Damaso, Maria Clara and Kapitan Tiago. Watch the luncheon scene.' },
+  { w: 'Noli Me Tangere', n: 'Church of San Diego', x: -55, z: -21.5, yaw: Math.PI, tip: 'Padre Salvi is at the altar. Basilio and Crispin stand near the bell tower door.' },
+  { w: 'Noli Me Tangere', n: 'Church courtyard (reflection garden)', x: -42, z: -30, yaw: 2.0, tip: 'See the empty grave of Don Rafael. Post a reflection on the board.' },
+  { w: 'Noli Me Tangere', n: 'House of Kapitan Tiago', x: -36, z: -6.5, yaw: Math.PI, tip: 'Go in and watch the scene of the return of Ibarra.' },
+  { w: 'Noli Me Tangere', n: 'Classroom', x: -55, z: 24.6, yaw: 0, tip: 'Talk to the Schoolmaster, then answer Booth 4 outside.' },
+  { w: 'Noli Me Tangere', n: 'Town hall and market', x: -73, z: 11, yaw: 0, tip: 'Read about who really rules San Diego. Answer Booth 5. Watch the scene of Sisa nearby.' },
+  { w: 'Noli Me Tangere', n: 'Lake of San Diego', x: -74, z: 1, yaw: -Math.PI / 2, tip: 'Talk to Elias and watch the scene on the lake.' },
+  { w: 'El Filibusterismo', n: 'University and the students', x: 40, z: -2.5, yaw: Math.PI, tip: 'Meet Makaraig and Placido Penitente. Watch the scene of the Academy of Spanish.' },
+  { w: 'El Filibusterismo', n: 'Land of Kabesang Tales', x: 47, z: 7.5, yaw: -0.4, tip: 'Talk to Juli and watch the scene of Kabesang Tales.' },
+  { w: 'El Filibusterismo', n: 'Wedding house (the lamp)', x: 55, z: -15, yaw: Math.PI, tip: 'Isagani waits outside. Go in, examine the lamp, watch the scene.' },
+  { w: 'El Filibusterismo', n: 'Underground meeting place', x: 55, z: 18, yaw: 0, tip: 'Simoun, Basilio and Kabesang Tales are inside. Answer Booth 6 outside.' },
+  { w: 'El Filibusterismo', n: 'Secret room', x: 55, z: 37, yaw: 0, tip: 'Study the plan on the wall.' },
+  { w: 'El Filibusterismo', n: 'Prison', x: 66.6, z: 21, yaw: 0.9, tip: 'Read why Basilio was the last one left in jail.' },
+  { w: 'El Filibusterismo', n: 'Colonial street', x: 64.5, z: 0, yaw: Math.PI / 2, tip: 'Meet Don Custodio and Ben Zayb. Visit the bazaar of Quiroga.' },
+  { w: 'El Filibusterismo', n: 'Bapor Tabo on the Pasig', x: 84, z: -7, yaw: 1.9, tip: 'Read the symbol of the steamship. Answer Booth 8.' },
+  { w: 'El Filibusterismo', n: 'Retreat of Padre Florentino (reflection)', x: 77, z: 31.5, yaw: 0, tip: 'Talk to Padre Florentino and post a reflection.' },
+  { w: 'Central', n: 'Central Reflection Zone', x: 0, z: 44, yaw: 0, tip: 'Each member posts one final insight on the wall.' }
+];
+
+/* ---------- moderator guide content ---------- */
+const GUIDE = [
+  ['Questions for each topic', [
+    'Social inequality (Booth 5, town hall): Who had power in San Diego and who had none? Is the gap smaller today?',
+    'Abuse of power and corruption (Booths 3 and 8): Compare Padre Damaso, Padre Salvi and the Bapor Tabo. What does abuse look like now?',
+    'Education for social change (Booth 4, classroom): Why did the friars fear a school and an academy of Spanish?',
+    'Reform versus revolution (Booth 6, underground): Ibarra, Elias, Simoun, Padre Florentino. Whose answer is the strongest?',
+    'Relevance today (Booth 2): Name one event from this year that could be a chapter in either novel.'
+  ]],
+  ['Comparing the two novels', [
+    'Visit the middle bulletin board in the Story Hall: "How the two novels connect".',
+    'Ask: how did Ibarra become Simoun? Point to the exact events that changed him.',
+    'Ask: how is Basilio the child different from Basilio the student? What stayed the same?',
+    'Contrast the worlds: San Diego is bright and looks peaceful; Manila is at dusk. Why did the group design them that way?'
+  ]],
+  ['Debate topics', [
+    'Resolved: Isagani was wrong to throw the lamp into the river.',
+    'Resolved: Education alone can free a nation.',
+    'Resolved: Simoun is a hero.',
+    'Give each side two minutes, then one minute of rebuttal. Members may answer in character.'
+  ]],
+  ['Reflection prompts', [
+    'Which character do I see in myself or in people I know?',
+    'What lesson from the novels of Rizal is still relevant in Philippine society today?',
+    'What is one concrete thing I can do for my community this year?'
+  ]],
+  ['Participation reminders', [
+    'Every member answers at least one booth under their own name.',
+    'Every member plays one character with "Act as this character" and speaks one line.',
+    'Rotate who controls the avatar so that everyone appears in the recording.',
+    'Check "Scenes & Progress" before ending: aim for all characters, scenes, booths and reflections.'
+  ]]
+];
+
+/* ---------- discussion boards ---------- */
+function board(id, x, z, rot, title, question, color, big) {
+  const W = big ? (big === true ? 16 : big) : 6, H = big ? W / 3.2 : 3.75;
+  const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot;
+  box(W + 0.3, H + 0.3, 0.2, 0x5a4030, 0, 1.1, 0, false, g);
+  box(0.3, 1.3, 0.3, 0x5a4030, -W / 2 + 0.5, 0, 0, false, g); box(0.3, 1.3, 0.3, 0x5a4030, W / 2 - 0.5, 0, 0, false, g);
+  const c = document.createElement('canvas'); c.width = big ? 2048 : 1024; c.height = 640;
+  const tex = new THREE.CanvasTexture(c);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: tex }));
+  m.position.set(0, 1.25 + H / 2, 0.12); g.add(m);
+  scene.add(g);
+  colliders.push({ a: x - 0.6, b: x + 0.6, c: z - 0.6, d: z + 0.6 });
+  const draw = () => {
+    const k = c.getContext('2d'), a = save.answers[id] || [];
+    k.fillStyle = '#fbf3df'; k.fillRect(0, 0, c.width, c.height);
+    k.fillStyle = color; k.fillRect(0, 0, c.width, 84);
+    k.fillStyle = '#fff'; k.textAlign = 'left'; k.textBaseline = 'top';
+    k.font = 'bold 42px Georgia'; k.fillText(title, 28, 20);
+    k.fillStyle = '#2b2118';
+    if (id === 'group') {
+      k.font = 'bold 40px Georgia'; k.fillText('Noli Me Tangere  •  El Filibusterismo', 28, 108);
+      k.font = '34px Georgia';
+      const rows = (save.members || 'Press E to add the group members and their roles').split('\n').filter(s => s.trim()).slice(0, 8);
+      rows.forEach((r, i) => k.fillText(r.trim().slice(0, 52), 28, 176 + i * 54));
+      tex.needsUpdate = true; return;
+    }
+    if (big) {
+      k.font = 'bold 38px Georgia'; k.fillText(question, 28, 100);
+      const notes = a.slice(-10), cols = ['#ffe680', '#ffc9de', '#c9f0c0', '#bfe3ff', '#ffd9a8'];
+      notes.forEach((n, i) => {
+        const nx = 28 + (i % 5) * 400, ny = 160 + Math.floor(i / 5) * 236;
+        k.fillStyle = cols[i % 5]; k.fillRect(nx, ny, 380, 216);
+        k.fillStyle = '#2b2118'; k.font = '25px Georgia';
+        const y = wrap(k, n.t, nx + 14, ny + 12, 352, 30, 5);
+        k.font = 'bold 24px Georgia'; k.fillText('— ' + n.n, nx + 14, Math.max(y + 4, ny + 176));
+      });
+      if (!notes.length) { k.font = 'italic 34px Georgia'; k.fillText('No reflections yet. Press E to post yours.', 28, 220); }
+      tex.needsUpdate = true; return;
+    }
+    k.font = 'bold 36px Georgia';
+    let y = wrap(k, question, 28, 104, 968, 44, 4) + 12;
+    k.fillStyle = color; k.fillRect(28, y, 968, 3); y += 16;
+    k.fillStyle = '#2b2118'; k.font = '28px Georgia';
+    a.slice(-3).forEach(n => { if (y < 540) y = wrap(k, n.n + ': ' + n.t, 28, y, 968, 34, 2) + 10; });
+    k.font = 'italic 26px Georgia'; k.fillStyle = '#6b5a48';
+    k.fillText(a.length + (a.length === 1 ? ' answer' : ' answers') + '  •  press E to add yours', 28, 592);
+    tex.needsUpdate = true;
+  };
+  boards[id] = { draw: draw, title: title, question: question, big: !!big };
+  draw();
+  interact.push({
+    x: x + Math.sin(rot) * 2.6, z: z + Math.cos(rot) * 2.6, r: big ? 6 : 3.6,
+    label: id === 'group' ? 'Edit group members' : (big ? 'Post a reflection' : 'Open discussion booth'),
+    open: () => id === 'group' ? showGroup() : showBoard(id, title, question)
+  });
+}
+board('group', 0, -9.5, 0, 'RIZAL IN THE METAVERSE', '', '#7a3b2e');
+board('n1', -41, 11, -Math.PI / 2, 'Booth 1 · Characters and symbols', 'What does Crisostomo Ibarra represent? Do young Filipinos today still share his hope?', '#2f6b3a');
+board('n2', -43.5, 18.5, Math.PI, 'Booth 2 · Relevance to society today', 'Abuse of power, unequal education, colonial mentality: which social issue in the Noli is still most alive today? Give one real example.', '#2f6b3a');
+board('n3', -67, -15.5, 0, 'Booth 3 · Abuse of power', 'Sisa lost her sons to an unjust system. Who are the "Sisas", "Basilios" and "Crispins" of the present day?', '#2f6b3a');
+board('f1', 44, 19, Math.PI, 'Booth 6 · Reform versus revolution', 'Reform or revolution? Ibarra tried schools; Simoun tried a bomb. Which path did Rizal really believe in, and which fits our country now?', '#7a3b2e');
+board('f2', 43, -18.5, 0, 'Booth 7 · Conscience and choice', 'Why did Isagani throw the lamp into the river: love, conscience, or a mistake? What would you have done?', '#7a3b2e');
+board('f3', 82.5, -2, -Math.PI / 2, 'Booth 8 · Corruption in government', 'The Bapor Tabo stands for a slow, divided government. What is the "Bapor Tabo" of today?', '#7a3b2e');
+board('wall', 0, 60.6, Math.PI, 'REFLECTION WALL', 'What did Rizal\'s novels teach me, and what will I do about it?', '#3d5a80', true);
+
+board('n4', -66.5, 19.5, Math.PI, 'Booth 4 · Education for social change', 'Ibarra believed a school could free San Diego, and the friars blocked it. Can education alone change a society? What blocks it today?', '#2f6b3a');
+board('n5', -72.5, 16.5, Math.PI, 'Booth 5 · Social inequality', 'In San Diego the same law treated Don Rafael, Sisa and the friars very differently. Where do rich and poor still get unequal treatment today?', '#2f6b3a');
+board('rn', -34.2, -34, -Math.PI / 2, 'REFLECTION · CHURCH COURTYARD', 'Which character of Noli Me Tangere do I see in myself or in people I know, and why?', '#2f6b3a', 10);
+board('rf', 78, 38, Math.PI, 'REFLECTION · RETREAT OF PADRE FLORENTINO', 'Padre Florentino asks: where are the youth who will give their golden hours to their country? What is my answer?', '#7a3b2e', 10);
+
+/* ---------- trees (fixed seed so the world is the same every visit) ---------- */
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const keepOut = [[-72, -38, -17, 17], [-66, -44, -47, -17], [-71, -63, -25, -13], [-65, -45, 20, 36], [-100, -72, -11, 11],
+  [43, 67, -38, -15], [44, 66, 18, 38], [35, 47, 8, 20], [80, 200, -200, 200], [-16, 16, 34, 64], [-13, 13, -19, 13],
+  [-48, -36, -34, 28], [34, 48, -22, 22]];
+keepOut.push([-46, -20, -48, -8], [-84, -68, 14, 30], [-40, -28, 20, 32], [-84, -72, -43, -18], [-72, -66, -13, 8], [-10, 10, -32, -18],
+  [29, 41, -30, -18], [64, 86, -15, 15], [68, 78, 18, 28], [70, 86, 27, 40], [49, 61, 34, 48]);
+for (let i = 0, placed = 0; i < 400 && placed < 70; i++) {
+  const x = -105 + rnd() * 185, z = -70 + rnd() * 140, s = 0.8 + rnd() * 0.7;
+  if (Math.abs(z) < 5 || (Math.abs(x) < 5 && z > 0 && z < 40)) continue;
+  if (keepOut.some(k => x > k[0] - 2 && x < k[1] + 2 && z > k[2] - 2 && z < k[3] + 2)) continue;
+  tree(x, z, s); placed++;
+}
+
+/* ---------- player ---------- */
+const player = person({ body: 0x2563a8, legs: 0x26324a });
+player.position.set(0, 0, 4);
+scene.add(player);
+let yaw = Math.PI, playerTag = null, bubble = null, bubbleUntil = 0, actingAs = '';
+function refreshTag() {
+  if (playerTag) player.remove(playerTag);
+  playerTag = textSprite((save.name || 'Student') + (actingAs ? ' as ' + actingAs : ''), { bg: 'rgba(37,99,168,.9)', h: 0.26 });
+  playerTag.position.y = 2.75; player.add(playerTag);
+}
+function speak(text) {
+  if (bubble) player.remove(bubble);
+  const words = text.split(/\s+/), lines = [''];
+  words.forEach(w => { if ((lines[lines.length - 1] + ' ' + w).length > 36) lines.push(w); else lines[lines.length - 1] = (lines[lines.length - 1] + ' ' + w).trim(); });
+  bubble = textSprite(lines.slice(0, 3), { bg: 'rgba(255,255,255,.95)', fg: '#2b2118', h: 0.38 });
+  bubble.position.y = 3.5 + bubble.scale.y / 2; player.add(bubble);
+  bubbleUntil = performance.now() + 9000;
+}
+
+/* ---------- panels ---------- */
+const panel = document.getElementById('panel');
+let panelOpen = false;
+function openPanel(title, build) {
+  panel.innerHTML = '';
+  const x = el('button', { id: 'close', textContent: '×', title: 'Close (Esc)' }); x.onclick = closePanel;
+  panel.append(x, el('h2', { textContent: title }));
+  build(panel);
+  panel.hidden = false; panelOpen = true;
+  for (const k in keys) keys[k] = false;
+}
+function closePanel() { panel.hidden = true; panelOpen = false; }
+function showNPC(d) {
+  openPanel(d.name, p => {
+    p.append(el('p', { className: 'role', textContent: d.role }), el('p', { textContent: d.text }), el('p', { className: 'quote', textContent: d.quote }));
+    const tk = TALK[d.name];
+    if (tk) {
+      p.append(el('p', {}, [el('b', { textContent: 'Personality: ' }), tk.traits]));
+      p.append(el('h3', { textContent: 'Ask ' + d.name.replace(' (child)', '') }));
+      const reply = el('p', { className: 'quote' }); reply.hidden = true;
+      tk.ask.forEach(qa => {
+        const bq = el('button', { className: 'alt ask', textContent: qa[0] });
+        bq.onclick = () => { reply.hidden = false; reply.textContent = '"' + qa[1] + '"'; };
+        p.append(bq);
+      });
+      p.append(reply, el('h3', { textContent: 'Creative interpretation' }));
+    }
+    markMet(d.name);
+    const b = el('button', { textContent: 'Act as this character' });
+    b.onclick = () => {
+      actingAs = d.name.replace(' (child)', ''); refreshTag();
+      if (player.userData.body) player.userData.body.material = M(d.look.body || d.look.robe);
+      closePanel();
+    };
+    const r = el('button', { className: 'alt', textContent: 'Be myself again' });
+    r.style.marginLeft = '8px';
+    r.onclick = () => { actingAs = ''; refreshTag(); if (player.userData.body) player.userData.body.material = M(0x2563a8); closePanel(); };
+    p.append(b, r, el('p', { className: 'dim', textContent: 'Creative interpretation: take this role, then press Enter to speak as the character.' }));
+  });
+}
+// s is a key scene, or a story with ready-made s.pages
+function showScene(s) {
+  const title = s.title, question = s.q || '';
+  const lines = s.pages || [['About this scene', 'Novel reference: ' + s.ref + '\n\n' + s.context + '\n\nCharacters: ' + s.cast]]
+    .concat(s.lines, [['Key takeaway', s.take]]);
+  let i = 0;
+  openPanel(title, p => {
+    const who = el('p', { className: 'role' }), line = el('p'), q = el('p', { className: 'q' }), count = el('p', { className: 'dim' });
+    const back = el('button', { className: 'alt', textContent: 'Back' }), next = el('button', { textContent: 'Next' });
+    next.style.marginLeft = '8px';
+    const render = () => {
+      who.textContent = lines[i][0]; line.textContent = lines[i][1];
+      count.textContent = 'Part ' + (i + 1) + ' of ' + lines.length + '  •  lines are retold in the group\'s own words';
+      q.textContent = i === lines.length - 1 ? question : '';
+      if (i === lines.length - 1 && s.id) markSeen(s.id);
+      next.textContent = i === lines.length - 1 ? 'Close' : 'Next';
+    };
+    back.onclick = () => { if (i > 0) { i--; render(); } };
+    next.onclick = () => { if (i < lines.length - 1) { i++; render(); } else closePanel(); };
+    p.append(who, line, q, back, next, count); render();
+  });
+}
+function showBoard(id, title, question) {
+  openPanel(title, p => {
+    p.append(el('p', { className: 'q', textContent: question }));
+    const list = el('div'); p.append(list);
+    const render = () => {
+      list.innerHTML = '';
+      const a = save.answers[id] || [];
+      if (!a.length) list.append(el('p', { className: 'dim', textContent: 'Nothing posted yet. Be the first.' }));
+      a.forEach((it, i) => {
+        const x = el('button', { className: 'x', textContent: '×', title: 'Remove' });
+        x.onclick = () => { a.splice(i, 1); persist(); boards[id].draw(); render(); };
+        list.append(el('div', { className: 'ans' }, [el('b', { textContent: it.n + ': ' }), el('span', { textContent: it.t }), x]));
+      });
+    };
+    render();
+    const n = el('input', { value: save.name + (actingAs ? ' as ' + actingAs : ''), placeholder: 'Name of the member answering', maxLength: 50 });
+    const t = el('textarea', { placeholder: 'Type the answer or insight here…', maxLength: 400 });
+    const b = el('button', { textContent: 'Post' });
+    b.onclick = () => {
+      const v = t.value.trim(); if (!v) return;
+      (save.answers[id] = save.answers[id] || []).push({ n: n.value.trim() || 'Anonymous', t: v });
+      persist(); boards[id].draw(); t.value = ''; render();
+    };
+    p.append(el('label', { textContent: 'Name' }), n, el('label', { textContent: 'Answer' }), t, b,
+      el('p', { className: 'dim', textContent: 'Answers are saved in this browser on this computer only. Other computers will not see them, so the group posts from one shared screen.' }));
+  });
+}
+function showGroup() {
+  openPanel('Group members and roles', p => {
+    const t = el('textarea', { value: save.members, placeholder: 'One member per line, e.g. Ana - World Builder' });
+    t.style.height = '170px';
+    const b = el('button', { textContent: 'Save' });
+    b.onclick = () => { save.members = t.value; persist(); boards.group.draw(); closePanel(); };
+    p.append(el('p', { className: 'dim', textContent: 'Roles: World Builder, Scriptwriter, Moderator, Character Voice / Avatar, Tech Support.' }), t, b);
+  });
+}
+function showGuide() {
+  openPanel('Moderator guide: discussion flow', p => {
+    const ol = el('ol');
+    ['Start at the Central Plaza. Introduce the group at the title board and read the Rizal monument.',
+     'Walk west to San Diego (Noli Me Tangere). Meet the characters, watch the key scene at the kiosk, then answer Booths 1 to 5. Focus: compare the social issues in the novel with present-day realities.',
+     'Walk east to Manila (El Filibusterismo). Enter the wedding house and the underground meeting place, watch both scenes, visit the Bapor Tabo. Answer Booths 6 to 8. Focus: debate Rizal\'s vision of reform versus revolution.',
+     'Creative interpretation: each member talks to a character, clicks "Act as this character", and presses Enter to speak one line in that character\'s voice.',
+     'Finish at the Reflection Zone (south). Each member posts one personal insight on the wall.',
+     'Recording: press H to hide the on-screen text for clean video and screenshots.'
+    ].forEach(s => ol.append(el('li', { textContent: s })));
+    p.append(el('h3', { textContent: 'Suggested sequence' }), ol);
+    GUIDE.forEach(sec => {
+      const ul = el('ul'); sec[1].forEach(s => ul.append(el('li', { textContent: s })));
+      p.append(el('h3', { textContent: sec[0] }), ul);
+    });
+    const b = el('button', { textContent: 'Start guided walkthrough' }); b.onclick = () => tourGo(0);
+    p.append(b);
+  });
+}
+
+/* ---------- progress ---------- */
+function counts() {
+  const ids = Object.keys(boards).filter(k => k !== 'group'), has = k => (save.answers[k] || []).length > 0;
+  return {
+    met: npcs.filter(n => save.met[n.d.name]).length, metAll: npcs.length,
+    seen: SCENES.filter(s => save.seen[s.id]).length, seenAll: SCENES.length,
+    booths: ids.filter(k => !boards[k].big && has(k)).length, boothsAll: ids.filter(k => !boards[k].big).length,
+    refl: ids.filter(k => boards[k].big && has(k)).length, reflAll: ids.filter(k => boards[k].big).length
+  };
+}
+function updateProgress() {
+  if (!started) return;
+  const c = counts(), done = c.met === c.metAll && c.seen === c.seenAll && c.booths === c.boothsAll && c.refl === c.reflAll;
+  document.getElementById('progress').textContent = (done ? '✓ COMPLETE  ' : '') + 'Characters ' + c.met + '/' + c.metAll +
+    '  Scenes ' + c.seen + '/' + c.seenAll + '  Booths ' + c.booths + '/' + c.boothsAll + '  Reflections ' + c.refl + '/' + c.reflAll;
+}
+function markMet(name) {
+  if (save.met[name]) return;
+  save.met[name] = 1; persist();
+  const rec = npcs.find(n => n.d.name === name); if (rec) setTag(rec);
+}
+function markSeen(id) {
+  if (save.seen[id]) return;
+  save.seen[id] = 1; persist();
+  const s = SCENES.find(x => x.id === id); if (s) s.mat.color.set(0x4caf50);
+}
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.timer); toast.timer = setTimeout(() => { t.hidden = true; }, 3500);
+}
+
+/* ---------- menus ---------- */
+const sceneOrder = () => SCENES.slice().sort((a, b) => 'NF'.indexOf(a.id[0]) - 'NF'.indexOf(b.id[0]) || a.id.localeCompare(b.id));
+function rowItem(done, text, btn, fn) {
+  const b = el('button', { className: 'alt', textContent: btn }); b.onclick = fn;
+  return el('div', { className: 'rowi' }, [el('b', { className: 'ok', textContent: done ? '✓' : '○' }), el('span', { textContent: text }), b]);
+}
+function showMenu() {
+  openPanel('Rizal in the Metaverse', p => {
+    p.append(el('p', { className: 'role', textContent: 'A virtual world of Noli Me Tangere and El Filibusterismo' }), el('h3', { textContent: 'Choose a world' }));
+    const g1 = el('div', { className: 'grid' });
+    [['Central Plaza and Story Hall', [0, 4, Math.PI]], ['Noli Me Tangere: San Diego', [-33, 0, -Math.PI / 2]], ['El Filibusterismo: Manila', [33, 0, Math.PI / 2]], ['Central Reflection Zone', [0, 44, 0]]]
+      .forEach(w => { const b = el('button', { textContent: w[0] }); b.onclick = () => tp(w[1][0], w[1][1], w[1][2]); g1.append(b); });
+    p.append(g1, el('h3', { textContent: 'Open' }));
+    const g2 = el('div', { className: 'grid' });
+    [['Story of both novels (B)', showStoryMenu], ['Travel to a place (T)', showTravel], ['Scenes and progress (J)', showJournal], ['Moderator guide (M)', showGuide], ['Creative output (P)', showOutput], ['Guided walkthrough', () => tourGo(0)]]
+      .forEach(a => { const b = el('button', { className: 'alt', textContent: a[0] }); b.onclick = a[1]; g2.append(b); });
+    p.append(g2, el('h3', { textContent: 'Controls' }));
+    const ul = el('ul');
+    ['Move: W A S D or the arrow keys. Hold Shift to run.', 'Look around: hold the mouse button and drag. Mouse wheel zooms.',
+     'A yellow arrow appears above anything you can use. Press E.', 'Enter: type a line for your avatar to say.',
+     'H hides all on-screen text for clean screenshots. K saves a screenshot.', 'Esc closes any window.',
+     'Phone or tablet: the left stick walks and turns, drag the screen to look, USE opens things, RUN toggles running, TALK lets your avatar speak. Hold the phone sideways.']
+      .forEach(s => ul.append(el('li', { textContent: s })));
+    p.append(ul);
+  });
+}
+function showStoryMenu() {
+  openPanel('Story bulletin board', p => {
+    p.append(el('p', { textContent: 'Read the whole story here, or walk to the Story Hall north of the Central Plaza to read it on the bulletin boards.' }));
+    ['noli', 'fili', 'link'].forEach(k => { const b = el('button', { className: 'ask', textContent: STORY[k].title }); b.onclick = () => showScene(STORY[k]); p.append(b); });
+    const go = el('button', { className: 'alt', textContent: 'Go to the Story Hall' }); go.onclick = () => tp(0, -19, Math.PI);
+    p.append(go);
+  });
+}
+function showTravel() {
+  openPanel('Travel', p => {
+    let w = '';
+    PLACES.forEach(s => {
+      if (s.w !== w) { w = s.w; p.append(el('h3', { textContent: w })); }
+      p.append(rowItem(false, s.n, 'Go', () => tp(s.x, s.z, s.yaw)));
+      p.lastChild.firstChild.textContent = '➤';
+    });
+  });
+}
+// teleport to the first free spot around a target, facing it
+function goNear(x, z) {
+  for (let i = 0; i < 8; i++) {
+    const a = i * Math.PI / 4, sx = x + Math.sin(a) * 2.4, sz = z + Math.cos(a) * 2.4;
+    if (!hit(sx, sz, 0.6)) { tp(sx, sz, a + Math.PI); return; }
+  }
+  tp(x, z, Math.PI);
+}
+function showJournal() {
+  openPanel('Scenes and progress', p => {
+    const c = counts();
+    p.append(el('p', { textContent: 'Characters met ' + c.met + ' of ' + c.metAll + '  •  Key scenes ' + c.seen + ' of ' + c.seenAll + '  •  Booths answered ' + c.booths + ' of ' + c.boothsAll + '  •  Reflections ' + c.refl + ' of ' + c.reflAll }));
+    p.append(el('h3', { textContent: 'Key scenes' }));
+    sceneOrder().forEach(s => {
+      const row = rowItem(save.seen[s.id], (s.id[0] === 'N' ? 'Noli: ' : 'Fili: ') + s.title, 'Watch', () => showScene(s));
+      const go = el('button', { className: 'alt', textContent: 'Go' }); go.onclick = () => goNear(s.x, s.z);
+      row.append(go); p.append(row);
+    });
+    p.append(el('h3', { textContent: 'Discussion booths and reflection boards' }));
+    Object.keys(boards).filter(k => k !== 'group').forEach(k => {
+      p.append(rowItem((save.answers[k] || []).length > 0, boards[k].title, 'Open', () => showBoard(k, boards[k].title, boards[k].question)));
+    });
+    p.append(el('h3', { textContent: 'Characters' }));
+    npcs.forEach(n => p.append(rowItem(save.met[n.d.name], n.d.name + ' — ' + n.d.role, 'Go', () => goNear(n.g.position.x, n.g.position.z))));
+  });
+}
+
+/* ---------- creative output ---------- */
+function summaryText() {
+  const c = counts(), L = [];
+  L.push('RIZAL IN THE METAVERSE: GROUP OUTPUT SUMMARY', '');
+  L.push('GROUP', (save.members || '(no members listed)').trim(), '');
+  L.push('THE VIRTUAL ENVIRONMENT',
+    'Central Plaza with the Story Hall (bulletin boards telling the whole story of both novels).',
+    'World 1, Noli Me Tangere: the town of San Diego with its plaza and kiosk, church, church courtyard and cemetery, classroom, town hall, market, ancestral houses, house of Kapitan Tiago, and the lake.',
+    'World 2, El Filibusterismo: Manila at dusk with a colonial street, university, wedding house, underground meeting place and secret room, prison, the land of Kabesang Tales, the Bapor Tabo, and the retreat of Padre Florentino.',
+    'Portals and a travel menu connect the worlds.', '');
+  L.push('PROGRESS', 'Characters met: ' + c.met + ' of ' + c.metAll, 'Key scenes watched: ' + c.seen + ' of ' + c.seenAll,
+    'Discussion booths answered: ' + c.booths + ' of ' + c.boothsAll, 'Reflection boards used: ' + c.refl + ' of ' + c.reflAll, '');
+  L.push('KEY SCENES');
+  sceneOrder().forEach(s => L.push((save.seen[s.id] ? '[x] ' : '[ ] ') + s.title + ' (' + s.ref + ')'));
+  L.push('', 'DISCUSSION');
+  Object.keys(boards).filter(k => k !== 'group').forEach(k => {
+    const a = save.answers[k] || [];
+    L.push('', boards[k].title, 'Q: ' + boards[k].question);
+    if (!a.length) L.push('  (no answers yet)');
+    a.forEach(it => L.push('  - ' + it.n + ': ' + it.t));
+  });
+  return L.join('\n');
+}
+function snap() {
+  renderer.render(scene, camera);
+  renderer.domElement.toBlob(blob => {
+    const a = el('a', { href: URL.createObjectURL(blob), download: 'rizal-metaverse-' + Date.now() + '.png' });
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+    toast('Screenshot saved to the Downloads folder (3D view only)');
+  });
+}
+function showOutput() {
+  openPanel('Creative output', p => {
+    const c = counts(), done = c.met === c.metAll && c.seen === c.seenAll && c.booths === c.boothsAll && c.refl === c.reflAll;
+    p.append(el('p', { className: done ? 'ok' : 'dim', textContent: done ? '✓ Activity complete: every character, scene, booth and reflection board has been covered.' : 'Not complete yet. See "Scenes & Progress" for what is left.' }));
+    p.append(el('pre', { textContent: summaryText() }));
+    const g = el('div', { className: 'grid' });
+    const b1 = el('button', { textContent: 'Start guided walkthrough' }); b1.onclick = () => tourGo(0);
+    const b2 = el('button', { textContent: 'Save screenshot (PNG)' }); b2.onclick = () => { closePanel(); setTimeout(snap, 350); };
+    const b3 = el('button', { className: 'alt', textContent: 'Download summary (.txt)' });
+    b3.onclick = () => {
+      const a = el('a', { href: URL.createObjectURL(new Blob([summaryText()], { type: 'text/plain' })), download: 'rizal-metaverse-summary.txt' });
+      a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+    };
+    g.append(b1, b2, b3); p.append(g);
+    p.append(el('h3', { textContent: 'Recording the walkthrough video' }),
+      el('p', { textContent: 'This world does not record video by itself. Use a screen recorder: on Windows press Win + Alt + R (Xbox Game Bar) to start and stop, or use OBS. Start the recorder, start the guided walkthrough, and press N or "Next stop" to move from place to place while the group discusses.' }));
+  });
+}
+
+/* ---------- guided walkthrough ---------- */
+let tourI = -1;
+function tourGo(i) {
+  const bar = document.getElementById('tour');
+  if (i < 0 || i >= PLACES.length) { tourI = -1; bar.hidden = true; if (i >= PLACES.length) showOutput(); return; }
+  tourI = i;
+  const s = PLACES[i];
+  tp(s.x, s.z, s.yaw);
+  document.getElementById('tourText').textContent = 'Stop ' + (i + 1) + ' of ' + PLACES.length + ' · ' + s.n + ': ' + s.tip;
+  document.getElementById('tourNext').textContent = i === PLACES.length - 1 ? 'Finish' : 'Next stop (N)';
+  bar.hidden = false;
+}
+
+/* ---------- input ---------- */
+const keys = {};
+const say = document.getElementById('say'), hud = document.getElementById('hud');
+let started = false, nearest = null, dragging = false;
+const typing = () => /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+addEventListener('keydown', e => {
+  if (!started) return;
+  if (e.key === 'Escape') { closePanel(); say.hidden = true; say.blur(); return; }
+  if (document.activeElement === say) {
+    if (e.key === 'Enter') { const v = say.value.trim(); if (v) speak(v); say.value = ''; say.hidden = true; say.blur(); }
+    return;
+  }
+  if (typing() || panelOpen) return;
+  const k = e.key.toLowerCase();
+  if (k === 'e' && nearest) { nearest.open(); return; }
+  if (k === 'm') { showGuide(); return; }
+  if (k === 'b') { showStoryMenu(); return; }
+  if (k === 't') { showTravel(); return; }
+  if (k === 'j') { showJournal(); return; }
+  if (k === 'p') { showOutput(); return; }
+  if (k === 'k') { snap(); return; }
+  if (k === 'n' && tourI >= 0) { tourGo(tourI + 1); return; }
+  if (k === 'h') { hud.hidden = !hud.hidden; return; }
+  if (k === 'enter') { say.hidden = false; say.focus(); e.preventDefault(); return; }
+  keys[k] = true;
+  if (k.startsWith('arrow')) e.preventDefault();
+});
+addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+renderer.domElement.addEventListener('mousedown', () => { dragging = true; });
+addEventListener('mouseup', () => { dragging = false; });
+addEventListener('mousemove', e => { if (dragging && !panelOpen) yaw -= e.movementX * 0.005; });
+
+const inName = document.getElementById('inName'), inMembers = document.getElementById('inMembers');
+inName.value = save.name; inMembers.value = save.members;
+/* ---------- phone and tablet: touch controls ---------- */
+let mobile = matchMedia('(pointer: coarse)').matches, runOn = false;
+const joy = { x: 0, y: 0 };
+function setDevice(m) {
+  mobile = m;
+  document.querySelectorAll('#start [data-dev]').forEach(b => { b.className = (b.dataset.dev === 'mobile') === m ? '' : 'alt'; });
+}
+function applyDevice() {
+  document.body.classList.toggle('mobile', mobile);
+  document.getElementById('joy').hidden = document.getElementById('btns').hidden = !mobile;
+  // phones skip the shadow pass and render at a lower resolution to stay smooth
+  if (mobile) { sun.castShadow = false; renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); }
+}
+setDevice(mobile);
+document.querySelectorAll('#start [data-dev]').forEach(b => { b.onclick = () => setDevice(b.dataset.dev === 'mobile'); });
+(function () {
+  const joyEl = document.getElementById('joy'), knob = document.getElementById('knob'), cv = renderer.domElement, opt = { passive: false };
+  const joyMove = e => {
+    const t = e.targetTouches[0], r = joyEl.getBoundingClientRect();
+    let dx = (t.clientX - r.left - r.width / 2) / 50, dy = (t.clientY - r.top - r.height / 2) / 50;
+    const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
+    joy.x = dx; joy.y = dy; knob.style.transform = 'translate(' + dx * 40 + 'px,' + dy * 40 + 'px)';
+    e.preventDefault();
+  };
+  const joyEnd = () => { joy.x = joy.y = 0; knob.style.transform = ''; };
+  joyEl.addEventListener('touchstart', joyMove, opt); joyEl.addEventListener('touchmove', joyMove, opt);
+  joyEl.addEventListener('touchend', joyEnd); joyEl.addEventListener('touchcancel', joyEnd);
+  // drag anywhere on the 3D view to look around
+  let lookId = null, lookX = 0;
+  cv.addEventListener('touchstart', e => { const t = e.changedTouches[0]; lookId = t.identifier; lookX = t.clientX; e.preventDefault(); }, opt);
+  cv.addEventListener('touchmove', e => {
+    for (const t of e.changedTouches) if (t.identifier === lookId) { yaw -= (t.clientX - lookX) * 0.006; lookX = t.clientX; }
+    e.preventDefault();
+  }, opt);
+  const use = () => { if (started && nearest && !panelOpen) nearest.open(); };
+  document.getElementById('bUse').onclick = use;
+  document.getElementById('prompt').onclick = use;
+  document.getElementById('bRun').onclick = e => { runOn = !runOn; e.currentTarget.classList.toggle('on', runOn); };
+  document.getElementById('bTalk').onclick = () => { say.hidden = false; say.focus(); };
+})();
+
+function begin(where) {
+  save.name = inName.value.trim() || 'Student'; save.members = inMembers.value;
+  document.getElementById('start').hidden = true;
+  started = true; applyDevice(); refreshTag(); boards.group.draw(); persist();
+  if (where === 'noli') { player.position.set(-33, 0, 0); yaw = -Math.PI / 2; }
+  if (where === 'fili') { player.position.set(33, 0, 0); yaw = Math.PI / 2; }
+}
+document.querySelectorAll('#start [data-go]').forEach(b => { b.onclick = () => begin(b.dataset.go); });
+const ACTIONS = { menu: showMenu, story: showStoryMenu, travel: showTravel, journal: showJournal, guide: showGuide, output: showOutput, snap: snap };
+document.querySelectorAll('#bar button').forEach(b => { b.onclick = () => { ACTIONS[b.dataset.a](); b.blur(); }; });
+document.getElementById('tourPrev').onclick = () => tourGo(Math.max(0, tourI - 1));
+document.getElementById('tourNext').onclick = () => tourGo(tourI + 1);
+document.getElementById('tourEnd').onclick = () => tourGo(-1);
+addEventListener('wheel', e => { if (!panelOpen) camMax = Math.max(3.5, Math.min(11, camMax + Math.sign(e.deltaY))); });
+// a link ending in ?go=x,z,yaw opens the world directly at that spot
+// ?device=mobile or ?device=pc picks the controls without asking
+const qs = new URLSearchParams(location.search), deep = qs.get('go');
+if (qs.get('device')) setDevice(qs.get('device') === 'mobile');
+if (deep) { const v = deep.split(',').map(Number); begin('hub'); player.position.set(v[0] || 0, 0, v[1] || 0); yaw = v[2] || 0; }
+
+/* ---------- loop ---------- */
+const R = 0.5;
+const hit = (x, z, r) => {
+  for (const c of colliders) if (x > c.a - r && x < c.b + r && z > c.c - r && z < c.d + r) return true;
+  return x < -108 || x > 87 || Math.abs(z) > 85;
+};
+const SKY = { day: new THREE.Color(0x9fd3ff), dusk: new THREE.Color(0xd9865a), dark: new THREE.Color(0x0d0b12), calm: new THREE.Color(0xbfe6d8) };
+const zoneEl = document.getElementById('zone'), promptEl = document.getElementById('prompt');
+let camDist = 7, camMax = 7, last = performance.now(), walkT = 0;
+const pointer = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.6, 4), new THREE.MeshBasicMaterial({ color: 0xffd23f }));
+pointer.rotation.x = Math.PI; pointer.visible = false; scene.add(pointer);
+
+function tick(now) {
+  requestAnimationFrame(tick);
+  const dt = Math.min((now - last) / 1000, 0.05); last = now;
+  const p = player.position;
+
+  if (started && !panelOpen && !typing()) {
+    if (keys.a || keys.arrowleft) yaw += 2.2 * dt;
+    if (keys.d || keys.arrowright) yaw -= 2.2 * dt;
+    yaw -= joy.x * 2.2 * dt;
+    const run = keys.shift || runOn;
+    const dir = (keys.w || keys.arrowup ? 1 : 0) - (keys.s || keys.arrowdown ? 1 : 0) || (Math.abs(joy.y) > 0.2 ? -joy.y : 0);
+    if (dir) {
+      const sp = (run ? 13 : 7) * dir * dt, nx = p.x + Math.sin(yaw) * sp, nz = p.z + Math.cos(yaw) * sp;
+      if (!hit(nx, p.z, R)) p.x = nx;
+      if (!hit(p.x, nz, R)) p.z = nz;
+      walkT += dt * (run ? 14 : 9);
+    }
+    const sw = dir ? Math.sin(walkT) * 0.55 : 0;
+    player.userData.legs[0].rotation.x = sw; player.userData.legs[1].rotation.x = -sw;
+  }
+  player.rotation.y = yaw;
+
+  // camera follows behind and pulls in when a wall is in the way
+  let want = camMax;
+  for (let d = 1; d <= camMax; d += 0.4) { if (hit(p.x - Math.sin(yaw) * d, p.z - Math.cos(yaw) * d, 0.25)) { want = Math.max(1.2, d - 0.6); break; } }
+  camDist += (want - camDist) * Math.min(1, dt * 8);
+  camera.position.set(p.x - Math.sin(yaw) * camDist, 1.9 + camDist * 0.3, p.z - Math.cos(yaw) * camDist);
+  camera.lookAt(p.x + Math.sin(yaw) * 2, 1.7, p.z + Math.cos(yaw) * 2);
+
+  // zone, sky and light
+  const inCellar = p.x > 46 && p.x < 64 && p.z > 21 && (p.z < 35 || (p.z < 46.5 && p.x > 50 && p.x < 60));
+  const inFili = p.x > 26, inNoli = p.x < -26, inRefl = p.z > 37 && Math.abs(p.x) < 14;
+  const sky = inCellar ? SKY.dark : inFili ? SKY.dusk : inRefl ? SKY.calm : SKY.day;
+  scene.background.lerp(sky, 0.04); scene.fog.color.copy(scene.background);
+  hemi.intensity += ((inCellar ? 0.22 : inFili ? 0.6 : 0.72) - hemi.intensity) * 0.05;
+  sun.intensity += ((inCellar ? 0.05 : inFili ? 0.42 : 0.58) - sun.intensity) * 0.05;
+  zoneEl.textContent = inCellar ? 'El Filibusterismo — Underground Meeting Place' : inFili ? 'El Filibusterismo — Manila'
+    : inNoli ? 'Noli Me Tangere — Town of San Diego' : inRefl ? 'Reflection Zone' : 'Central Plaza';
+
+  // characters
+  const t = now / 1000;
+  if (sisa) {
+    sisa.g.position.x = -62 + Math.sin(t * 0.35) * 5; sisa.g.position.z = 10 + Math.sin(t * 0.7) * 1.5;
+  }
+  npcs.forEach(n => {
+    const dx = p.x - n.g.position.x, dz = p.z - n.g.position.z;
+    const target = dx * dx + dz * dz < 36 ? Math.atan2(dx, dz) : (n === sisa ? Math.atan2(Math.cos(t * 0.35), 0.4 * Math.cos(t * 0.7)) : n.base);
+    let diff = target - n.g.rotation.y;
+    diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+    n.g.rotation.y += diff * Math.min(1, dt * 5);
+  });
+  spinners.forEach(s => { s.rotation.y = t * 2; s.position.y = 2.9 + Math.sin(t * 2) * 0.15; });
+  lampLight.intensity = 1 + Math.sin(t * 7) * 0.12;
+  torch1.intensity = 1.2 + Math.sin(t * 11) * 0.2; torch2.intensity = 1.2 + Math.cos(t * 9) * 0.2;
+  if (bubble && now > bubbleUntil) { player.remove(bubble); bubble = null; }
+
+  // nearest thing to interact with
+  nearest = null; let best = 1e9;
+  for (const it of interact) {
+    const dx = p.x - it.x, dz = p.z - it.z, d2 = dx * dx + dz * dz;
+    if (d2 < it.r * it.r && d2 < best) { best = d2; nearest = it; }
+  }
+  promptEl.hidden = !nearest || panelOpen || !started;
+  if (nearest) promptEl.textContent = 'Press E: ' + nearest.label;
+
+  // floating arrow over whatever E will open
+  pointer.visible = !!nearest && started;
+  if (nearest) pointer.position.set(nearest.x, (nearest.mh || 4.5) + Math.sin(t * 5) * 0.15, nearest.z);
+  portals.forEach((d, i) => { d.material.opacity = 0.3 + Math.sin(t * 3 + i) * 0.12; });
+  secretLight.intensity = 1 + Math.sin(t * 8) * 0.15;
+  // the shadow area follows the player
+  sun.position.set(p.x + 40, 80, p.z + 30); sun.target.position.set(p.x, 0, p.z);
+
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
