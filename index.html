@@ -89,6 +89,14 @@
   .mobile #panel pre{max-height:150px;font-size:11px}
   #rotate{display:none;position:fixed;inset:0;z-index:40;background:#3b2a1a;color:#f6ecd6;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box;font-size:20px;line-height:1.5}
   @media (orientation:portrait){.mobile #rotate{display:flex}}
+  .mobile.portrait #rotate{display:flex}
+  #rotate button{font-size:13px;background:#5a4030;margin-top:22px}
+  /* some in-app browsers enlarge text; keep it at the designed size */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  /* phone: one Menu button instead of seven, so nothing overlaps the place name */
+  .mobile #bar button:not([data-a="menu"]){display:none}
+  .mobile #bar button{padding:7px 16px;font-size:13px}
+  .mobile #zone,.mobile #progress{max-width:64vw;box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   @media (max-height:480px){
     #start .card{padding:12px 18px;width:min(640px,94vw)}
     #start h1{font-size:20px} #start p{margin:2px 0 6px;font-size:13px}
@@ -110,7 +118,7 @@
 <div id="start">
   <div class="card">
     <h1>Rizal in the Metaverse</h1>
-    <p>A walk-through world of <i>Noli Me Tangere</i> and <i>El Filibusterismo</i>.</p>
+    <p>A walk-through world of <i>Noli Me Tangere</i> and <i>El Filibusterismo</i>. <small>(version 3)</small></p>
     <label for="inName">Your name</label>
     <input id="inName" maxlength="30" placeholder="e.g. Juan">
     <label for="inMembers">Group members and roles (one per line)</label>
@@ -152,7 +160,7 @@
 <input id="say" hidden maxlength="110" placeholder="Type what your avatar says, then press Enter">
 <div id="panel" hidden></div>
 <div id="fade"></div>
-<div id="rotate"><div><b>Turn your phone sideways</b><br>This world is played in landscape.</div></div>
+<div id="rotate"><div><b>Turn your phone sideways</b><br>This world is played in landscape.<br><button id="notPhone">I am on a computer</button></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
@@ -1325,7 +1333,7 @@ function showMenu() {
       .forEach(w => { const b = el('button', { textContent: w[0] }); b.onclick = () => tp(w[1][0], w[1][1], w[1][2]); g1.append(b); });
     p.append(g1, el('h3', { textContent: 'Open' }));
     const g2 = el('div', { className: 'grid' });
-    [['Story of both novels (B)', showStoryMenu], ['Travel to a place (T)', showTravel], ['Scenes and progress (J)', showJournal], ['Moderator guide (M)', showGuide], ['Creative output (P)', showOutput], ['Guided walkthrough', () => tourGo(0)]]
+    [['Story of both novels (B)', showStoryMenu], ['Travel to a place (T)', showTravel], ['Scenes and progress (J)', showJournal], ['Moderator guide (M)', showGuide], ['Creative output (P)', showOutput], ['Guided walkthrough', () => tourGo(0)], ['Save screenshot (K)', () => { closePanel(); setTimeout(snap, 350); }]]
       .forEach(a => { const b = el('button', { className: 'alt', textContent: a[0] }); b.onclick = a[1]; g2.append(b); });
     p.append(g2, el('h3', { textContent: 'Controls' }));
     const ul = el('ul');
@@ -1482,8 +1490,13 @@ inName.value = save.name; inMembers.value = save.members;
 /* ---------- phone and tablet: touch controls ---------- */
 let mobile = matchMedia('(pointer: coarse)').matches, runOn = false;
 const joy = { x: 0, y: 0 };
+// portrait is blocked on phones: checked from the real window size, since some in-app browsers misreport orientation
+function checkOrient() { document.body.classList.toggle('portrait', innerHeight > innerWidth); }
+addEventListener('resize', checkOrient); addEventListener('orientationchange', checkOrient); checkOrient();
+document.getElementById('notPhone').onclick = () => { setDevice(false); applyDevice(); };
 function setDevice(m) {
   mobile = m;
+  document.body.classList.toggle('mobile', m);
   document.querySelectorAll('#start [data-dev]').forEach(b => { b.className = (b.dataset.dev === 'mobile') === m ? '' : 'alt'; });
 }
 function applyDevice() {
