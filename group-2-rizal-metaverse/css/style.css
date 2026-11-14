@@ -1,0 +1,236 @@
+/* The Rizal Legacy Experience: museum interface. Gold, ivory, dark wood, emerald. */
+:root{
+  --ink:#0f0c08; --panel:rgba(18,13,9,.92); --ivory:#f3ead6; --dim:#b9ab8c; --gold:#c9a24a; --line:rgba(201,162,74,.45);
+  --emerald:#0f4d3c; --mint:#8fd0b8; --crimson:#7a1f1f;
+  --display:"Cinzel",Georgia,"Times New Roman",serif; --text:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);color:var(--ivory);font-family:var(--text);font-size:18px}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+#gl:active{cursor:grabbing}
+.kicker{font-family:var(--display);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0}
+button{font-family:var(--display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory);background:transparent;border:1px solid var(--line);padding:9px 16px;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
+button:hover{border-color:var(--gold);background:rgba(201,162,74,.14)}
+button.primary{background:var(--gold);color:#1a120a;border-color:var(--gold)}
+button.primary:hover{background:#e0bd66}
+input,textarea{width:100%;font:17px var(--text);color:var(--ivory);background:rgba(243,234,214,.06);border:0;border-bottom:1px solid var(--line);padding:8px 4px;margin:4px 0 10px;outline:none}
+input:focus,textarea:focus{border-bottom-color:var(--gold);background:rgba(243,234,214,.1)}
+textarea{min-height:76px;resize:vertical;border:1px solid var(--line);padding:8px}
+label{display:block;font-family:var(--display);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-top:8px}
+
+/* introduction */
+#intro{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(ellipse at center,rgba(15,12,8,.35) 0%,rgba(15,12,8,.9) 75%);transition:opacity 1.2s,visibility 1.2s;padding:20px}
+.started #intro{opacity:0;visibility:hidden}
+#intro .title{animation:rise 1.8s ease both}
+#intro h1{font-size:clamp(34px,6.4vw,84px);letter-spacing:.08em;line-height:1.08;color:var(--ivory);text-shadow:0 4px 40px #000}
+#intro .sub{font-style:italic;font-size:clamp(17px,2.2vw,26px);color:var(--gold);margin:18px 0 34px}
+#intro .fine{font-family:var(--display);font-size:10px;letter-spacing:.3em;color:var(--dim);margin-top:30px;text-transform:uppercase}
+#intro .title::before,#intro .title::after{content:"";display:block;width:120px;height:1px;background:var(--gold);margin:0 auto 26px}
+#intro .title::after{margin:26px auto 0}
+#intro .registry{display:none;width:min(520px,94vw);max-height:92vh;max-height:92dvh;overflow:auto;text-align:left;background:var(--panel);border:1px solid var(--line);padding:26px 30px;animation:rise .9s ease both}
+#intro .registry h2{font-size:22px;letter-spacing:.06em;margin-bottom:10px}
+#intro .registry .second{margin-top:16px}
+#intro .registry button{margin-top:10px;width:100%}
+#intro.step2 .title{display:none}
+#intro.step2 .registry{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+
+/* heads-up display */
+#where,#top,#views,#tags,#timer{opacity:0;transition:opacity .8s}
+.started #where,.started #top,.started #views,.started #tags{opacity:1}
+#where{position:fixed;top:16px;left:20px;z-index:10;pointer-events:none;max-width:56vw;text-shadow:0 2px 12px #000}
+#wing{display:block;font-family:var(--display);font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+#roomName{font-family:var(--display);font-weight:400;font-size:clamp(16px,2.2vw,24px);letter-spacing:.06em}
+#top{position:fixed;top:14px;right:16px;z-index:10;display:flex;gap:6px}
+#top button{background:rgba(15,12,8,.6);backdrop-filter:blur(6px)}
+#pct{font-style:normal;color:var(--gold);margin-left:4px}
+#timer{position:fixed;top:60px;right:16px;z-index:10;font-family:var(--display);font-size:13px;letter-spacing:.14em;background:var(--emerald);border:1px solid var(--mint);padding:6px 12px;display:none}
+#timer.on{display:block;opacity:1}
+#timer.over{background:var(--crimson);border-color:#e08a8a}
+#views{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:10;display:flex;align-items:center;gap:4px;background:rgba(15,12,8,.66);border:1px solid var(--line);backdrop-filter:blur(6px)}
+#views button{border:0;font-size:22px;padding:4px 16px;letter-spacing:0}
+#viewName{font-family:var(--display);font-size:11px;letter-spacing:.18em;text-transform:uppercase;min-width:190px;text-align:center;white-space:nowrap}
+.playing #views,.touring #views,.touring #top,.card-open #views{display:none}
+
+/* markers placed over the 3D view */
+#tags{position:fixed;inset:0;z-index:8;pointer-events:none}
+.tag{position:absolute;left:0;top:0;margin:-11px 0 0 -11px;padding:0;border:0;background:none;display:flex;align-items:center;gap:8px;pointer-events:auto;text-transform:none;letter-spacing:.04em;font:600 15px var(--text);color:var(--ivory);text-shadow:0 1px 8px #000,0 0 2px #000;white-space:nowrap}
+.tag:hover{background:none}
+.tag i{flex:none;width:22px;height:22px;border:1.5px solid var(--gold);transform:rotate(45deg);background:rgba(15,12,8,.55);position:relative;animation:pulse 2.4s infinite}
+.tag i::after{content:"";position:absolute;inset:6px;background:var(--gold)}
+.tag span{background:rgba(15,12,8,.62);padding:2px 9px;border-left:2px solid var(--gold)}
+.tag.far span{display:none}
+.tag.far:hover span{display:block}
+.tag.done i::after{background:var(--mint)}
+.tag.done i{border-color:var(--mint)}
+.tag.k-door i{border-radius:50%;transform:none;width:26px;height:26px}
+.tag.k-door i::after{inset:8px;border-radius:50%}
+.tag.k-door span{font-family:var(--display);font-weight:400;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+.tag.k-station i,.tag.k-reflect i,.tag.k-compare i,.tag.k-voices i{border-color:var(--mint)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,162,74,.55)}60%{box-shadow:0 0 0 9px rgba(201,162,74,0)}}
+
+.tag.near i{box-shadow:0 0 0 5px rgba(201,162,74,.45);animation:none}
+.tag.near span{display:block!important;background:var(--gold);color:#1a120a;text-shadow:none}
+
+/* the player: prompt for the nearest marker, and a touch stick on phones and tablets */
+#use{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);z-index:11;display:none;background:var(--gold);color:#1a120a;border-color:var(--gold);max-width:80vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#use.on{display:block}
+#stick{position:fixed;left:20px;bottom:20px;z-index:11;width:112px;height:112px;border-radius:50%;border:1px solid var(--gold);background:rgba(15,12,8,.5);touch-action:none;display:none}
+#knob{position:absolute;left:34px;top:34px;width:44px;height:44px;border-radius:50%;background:var(--gold);opacity:.85}
+.touch.started #stick{display:block}
+.touch #views{left:auto;right:12px;transform:none}
+.touch #use{bottom:auto;top:64px}
+/* phones and tablets are played in landscape */
+#rotate{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;background:#0f0c08}
+#rotate h2{font-size:22px;letter-spacing:.1em;margin-bottom:10px}
+#rotate p{font-style:italic;color:var(--dim);margin:0 0 22px}
+.touch.portrait #rotate{display:flex}
+.card-open #stick,.playing #stick,.touring #stick,.card-open #use,.playing #use,.touring #use{display:none!important}
+
+/* information card: a drawer on the right */
+#card{position:fixed;top:0;right:0;bottom:0;z-index:20;width:min(430px,94vw);background:var(--panel);border-left:1px solid var(--line);padding:26px 26px 30px;overflow:auto;transform:translateX(104%);transition:transform .55s cubic-bezier(.2,.8,.2,1);backdrop-filter:blur(8px)}
+#card.on{transform:none}
+#card h2,#sheet h2{font-size:24px;letter-spacing:.05em;line-height:1.2;margin:0 34px 14px 0;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.close{position:sticky;float:right;top:0;z-index:2;border:1px solid var(--line);padding:2px 11px;font-size:20px;letter-spacing:0;background:var(--ink)}
+#card p,#sheet p{line-height:1.45;margin:0 0 12px}
+p.lead{font-size:20px;font-style:italic;color:#fff5dc}
+p.note{font-size:15px;color:var(--dim);font-style:italic}
+#card h3,#sheet h3{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:18px 0 8px}
+.portrait{float:right;width:96px;margin:0 0 10px 14px;border:3px solid var(--gold);box-shadow:0 6px 20px #000}
+.tabs{display:flex;flex-wrap:wrap;gap:0 14px;clear:both;border-bottom:1px solid var(--line);margin-bottom:14px}
+.tabs button{border:0;border-bottom:2px solid transparent;padding:8px 0;font-size:10.5px;color:var(--dim)}
+.tabs button:hover{background:none;color:var(--ivory)}
+.tabs button.on{color:var(--gold);border-bottom-color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chips span{border:1px solid var(--line);padding:3px 11px;font-size:15px;font-style:italic}
+button.ask{display:block;width:100%;text-align:left;text-transform:none;letter-spacing:.02em;font:17px var(--text);margin-bottom:8px;border-left:2px solid var(--gold)}
+.item{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:11px 0;border-bottom:1px solid rgba(201,162,74,.2)}
+.item b{display:block;font-weight:600}
+.item small,.rub small,.entry small{display:block;color:var(--dim);font-size:14px;font-style:italic}
+.item.done b::before{content:"✓ ";color:var(--mint)}
+.item button{flex:none}
+.step{display:flex;gap:12px;align-items:flex-start;margin:0;text-transform:none;letter-spacing:0;font:18px var(--text);color:var(--ivory);cursor:pointer}
+.step input{width:auto;margin:6px 0 0}
+.entry{position:relative;border-left:2px solid var(--mint);background:rgba(143,208,184,.07);padding:9px 34px 9px 12px;margin-bottom:8px}
+.entry p{margin:0 0 3px!important}
+.entry .x{position:absolute;top:6px;right:6px;border:0;padding:0 7px;font-size:17px;color:var(--dim)}
+.prompts button{display:block;width:100%;text-align:left;text-transform:none;letter-spacing:0;font:italic 16px var(--text);margin-bottom:6px}
+.prompts button.on{border-color:var(--gold);background:rgba(201,162,74,.16)}
+.cmp{border-bottom:1px solid rgba(201,162,74,.2);padding:10px 0}
+.cmp b{font-family:var(--display);font-weight:400;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.cmp p{margin:4px 0 6px!important;font-size:16px}
+.cmp textarea{min-height:52px;margin:0}
+.rub{border-left:2px solid var(--gold);padding:4px 0 4px 12px;margin-bottom:12px}
+.rub p{margin:2px 0!important}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+
+/* dialogue bar */
+#dlg{position:fixed;left:4vw;right:4vw;bottom:22px;z-index:22;background:linear-gradient(180deg,rgba(15,12,8,.82),rgba(15,12,8,.96));border-top:2px solid var(--gold);padding:14px 22px 12px;transform:translateY(140%);transition:transform .5s cubic-bezier(.2,.8,.2,1),right .4s}
+#dlg.on{transform:none}
+.card-open #dlg{right:calc(min(430px,94vw) + 3vw)}
+#dlgWho{font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+#dlgText{font-size:clamp(18px,2.1vw,23px);line-height:1.4;margin:6px 0 10px;min-height:2.8em;white-space:pre-line;cursor:pointer}
+#dlg .foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+#dlgMeta{color:var(--dim);font-style:italic;font-size:14px}
+#dlgBtns{display:flex;gap:6px}
+
+/* full-screen sheets */
+#sheet{position:fixed;inset:0;z-index:30;background:rgba(10,8,5,.95);overflow:auto;opacity:0;visibility:hidden;transition:opacity .45s,visibility .45s;padding:26px 20px 50px}
+#sheet.on{opacity:1;visibility:visible}
+#sheet .inner{max-width:980px;margin:0 auto}
+#sheet .close{position:fixed;top:16px;right:20px}
+#sheet h2{font-size:clamp(22px,3.4vw,34px)}
+#sheet ul{margin:0 0 12px;padding-left:20px;line-height:1.5}
+#sheet table{width:100%;border-collapse:collapse;margin-bottom:14px}
+#sheet th,#sheet td{text-align:left;padding:8px 10px;border-bottom:1px solid rgba(201,162,74,.22);vertical-align:top}
+#sheet th{font-family:var(--display);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+#sheet pre{white-space:pre-wrap;font:14px/1.5 Consolas,monospace;color:var(--ivory);background:rgba(243,234,214,.05);border:1px solid var(--line);padding:14px;max-height:340px;overflow:auto}
+.wing{border-left:3px solid var(--gold);padding:2px 0 6px 16px;margin-bottom:18px}
+.wing.noli{border-color:#3d8a6a}.wing.fili{border-color:#a8323e}.wing.hallw{border-color:var(--mint)}
+.wing h3{margin-top:0!important}
+.nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.node{text-align:left;text-transform:none;letter-spacing:0;padding:12px 14px;background:rgba(243,234,214,.04)}
+.node b{display:block;font-family:var(--display);font-weight:400;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.node small{display:block;font:italic 14px var(--text);color:var(--dim);margin-top:4px}
+.node.seen b::after{content:"  ✓";color:var(--mint)}
+.node.here{border-color:var(--gold);background:rgba(201,162,74,.16)}
+
+/* guided walkthrough */
+#tour{position:fixed;left:0;right:0;bottom:0;z-index:24;display:none;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.86) 45%);padding:46px 5vw 16px;text-align:center}
+.touring #tour{display:block}
+#tourCap{font-size:clamp(18px,2.4vw,26px);font-style:italic;margin:0 0 10px;text-shadow:0 2px 10px #000}
+#tour div{display:flex;gap:6px;justify-content:center;align-items:center}
+#tour small{font-family:var(--display);font-size:11px;letter-spacing:.2em;color:var(--gold);margin-right:8px}
+#tour button{padding:5px 12px;font-size:10.5px}
+
+/* room-to-room transition */
+#curtain{position:fixed;inset:0;z-index:40;background:#070504;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;visibility:hidden;transition:opacity .6s,visibility .6s;padding:20px}
+#curtain.on{opacity:1;visibility:visible}
+#curtain h2{font-size:clamp(22px,4vw,44px);letter-spacing:.1em}
+#curtain h2::after{content:"";display:block;width:90px;height:1px;background:var(--gold);margin:18px auto 0}
+#toast{position:fixed;left:50%;bottom:124px;transform:translate(-50%,20px);z-index:45;background:var(--emerald);border:1px solid var(--mint);padding:8px 18px;font-style:italic;opacity:0;transition:opacity .4s,transform .4s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* narrow or portrait screens: the card becomes a bottom sheet, the dialogue moves to the top */
+@media (max-width:760px),(orientation:portrait){
+  #card{top:auto;left:0;width:100%;height:60vh;height:60dvh;border-left:0;border-top:1px solid var(--line);transform:translateY(104%);padding:18px 18px 24px}
+  #dlg,.card-open #dlg{left:10px;right:10px;bottom:auto;top:58px;transform:translateY(-160%)}
+  #dlg.on{transform:none}
+  .playing #dlg{top:auto;bottom:12px}
+  #top button{padding:7px 9px;font-size:10px;letter-spacing:.08em}
+  #where{top:52px;left:12px;max-width:90vw}
+  #viewName{min-width:150px;font-size:10px}
+}
+/* short landscape screens (phones held sideways) */
+@media (max-height:480px) and (orientation:landscape){
+  body{font-size:15px}
+  #card{width:min(380px,48vw);padding:14px 16px 18px}
+  #card h2{font-size:18px;margin-bottom:8px;padding-bottom:8px}
+  .card-open #dlg{right:calc(min(380px,48vw) + 2vw)}
+  #dlg{bottom:8px;padding:8px 14px}
+  #dlgText{font-size:16px;margin:3px 0 6px;min-height:2.6em}
+  #views{bottom:8px}
+  #top{top:8px;right:8px}#top button{padding:6px 10px;font-size:10px}
+  #where{top:8px;left:12px}
+  .portrait{width:64px}
+  textarea{min-height:48px}
+  #intro{padding:8px}
+  #intro h1{font-size:clamp(26px,6vw,46px)}
+  #intro .sub{margin:8px 0 14px;font-size:17px}
+  #intro .fine{margin-top:12px}
+  #intro .title::before{margin-bottom:12px}#intro .title::after{margin-top:12px}
+  #intro .registry h2{font-size:17px;margin-bottom:4px}
+  #intro .registry{padding:14px 20px;width:min(680px,96vw)}
+  input{font-size:16px;padding:5px 4px;margin:2px 0 6px}
+  label{margin-top:4px}
+  #roomName{font-size:15px}
+  #wing{font-size:9px}
+  #viewName{min-width:130px;font-size:9.5px}
+  #views button{font-size:19px;padding:2px 12px}
+  .touch #stick{width:98px;height:98px;left:12px;bottom:10px}
+  .touch #knob{left:27px;top:27px}
+  .touch #use{top:44px;padding:6px 12px;font-size:11px}
+  #card p,#sheet p{margin-bottom:8px}
+  #card h3,#sheet h3{margin:10px 0 5px}
+  .tabs{gap:0 11px;margin-bottom:8px}.tabs button{padding:5px 0;font-size:10px}
+  button{padding:7px 12px;font-size:11px}
+  button.ask{font-size:15px;margin-bottom:5px}
+  #sheet h2{font-size:20px;margin-bottom:8px;padding-bottom:8px}
+  #sheet .close{top:8px;right:10px}
+  #tour{padding:26px 4vw 8px}#tourCap{font-size:16px;margin-bottom:6px}
+  #curtain h2{font-size:24px}
+  #toast{bottom:auto;top:82px;font-size:14px}
+  #roleFields{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+  #roleFields label{grid-column:span 1}
+  #sheet{padding:14px 14px 30px}
+}
+@media print{
+  body{overflow:visible;background:#fff}
+  body>*:not(#sheet){display:none!important}
+  #sheet{position:static;opacity:1;visibility:visible;background:#fff;color:#000;padding:0}
+  #sheet *{color:#000!important}
+  #sheet pre{max-height:none;border:0}
+  #sheet .close,#sheet .row{display:none}
+}

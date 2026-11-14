@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Rizal Legacy Experience</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<!-- cinematic introduction and visitor registry -->
+<section id="intro">
+  <div class="title">
+    <p class="kicker">An interactive heritage exhibition</p>
+    <h1>The Rizal Legacy<br>Experience</h1>
+    <p class="sub">Noli Me Tangere &nbsp;·&nbsp; El Filibusterismo</p>
+    <button id="btnBegin" class="primary">Enter the museum</button>
+    <p class="fine">Rizal in the Metaverse &nbsp;·&nbsp; Group 2</p>
+  </div>
+  <div class="registry">
+    <p class="kicker">Visitors' registry</p>
+    <h2>Who is visiting today?</h2>
+    <label for="inVisitor">Your name</label>
+    <input id="inVisitor" maxlength="40" placeholder="Name shown on this device">
+    <p class="kicker second">The five roles of the group</p>
+    <div id="roleFields"></div>
+    <button id="btnEnter" class="primary">Open the doors</button>
+  </div>
+</section>
+
+<!-- minimal heads-up display -->
+<header id="where"><span id="wing"></span><b id="roomName"></b></header>
+<nav id="top">
+  <button id="btnMap">Map <i id="pct"></i></button>
+  <button id="btnMod">Moderator</button>
+  <button id="btnCat">Catalogue</button>
+</nav>
+<div id="timer"></div>
+<nav id="views"><button id="navPrev" aria-label="Previous viewpoint">‹</button><span id="viewName"></span><button id="navNext" aria-label="Next viewpoint">›</button></nav>
+<div id="tags"></div>
+<button id="use"></button>
+<div id="stick"><div id="knob"></div></div>
+
+<!-- information card -->
+<aside id="card">
+  <button id="cardClose" class="close" aria-label="Close">×</button>
+  <p class="kicker" id="cardKicker"></p>
+  <h2 id="cardTitle"></h2>
+  <div id="cardBody"></div>
+</aside>
+
+<!-- dialogue bar for conversations and scenes -->
+<div id="dlg">
+  <b id="dlgWho"></b>
+  <p id="dlgText"></p>
+  <div class="foot"><small id="dlgMeta"></small><span id="dlgBtns"></span></div>
+</div>
+
+<!-- full-screen sheets: map, moderator console, catalogue -->
+<section id="sheet">
+  <button id="sheetClose" class="close" aria-label="Close">×</button>
+  <div class="inner">
+    <p class="kicker" id="sheetKicker"></p>
+    <h2 id="sheetTitle"></h2>
+    <div id="sheetBody"></div>
+  </div>
+</section>
+
+<!-- guided walkthrough captions -->
+<div id="tour"><p id="tourCap"></p><div><small id="tourN"></small><button id="tourPrev">Back</button><button id="tourAuto">Pause</button><button id="tourNext" class="primary">Next</button><button id="tourEnd">End</button></div></div>
+
+<div id="curtain"><p class="kicker" id="curKicker"></p><h2 id="curTitle"></h2></div>
+<div id="toast"></div>
+<div id="rotate"><div><h2>Turn your phone sideways</h2><p>The museum is visited in landscape.</p><button id="notPhone">I am on a computer</button></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/data.js"></script>
+<script src="js/world.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
