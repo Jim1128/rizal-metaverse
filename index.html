@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <title>Rizal in the Metaverse</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Marcellus&display=swap" rel="stylesheet">
 <style>
   html,body{margin:0;height:100%;overflow:hidden;background:#111;font-family:Georgia,"Times New Roman",serif;color:#2b2118}
   canvas{display:block}
@@ -111,6 +113,59 @@
     .mobile #prompt{bottom:14px;font-size:13px;padding:6px 12px;max-width:44vw}
   }
   .mobile #say{bottom:auto;top:80px}
+
+  /* ---------- version 4 theme: fiesta parchment with terracotta, marigold and teal ---------- */
+  html,body{font-family:"Lora",Georgia,serif}
+  h1,h2,h3,#zone,#bar button,#btns button,button{font-family:"Marcellus",Georgia,serif}
+  #panel{background:#fcf7ec;border:1px solid #c9a56a;border-radius:16px;box-shadow:0 18px 50px rgba(40,20,5,.45);padding:0 26px 22px;animation:fadeIn .28s ease}
+  #panel::before{content:"";display:block;height:6px;margin:0 -26px 14px;background:linear-gradient(90deg,#b5482f,#e1a730,#1f6f6b)}
+  #panel h2{font-weight:400;font-size:25px;color:#3a2413;letter-spacing:.02em}
+  #panel h3{font-weight:400;letter-spacing:.08em;text-transform:uppercase;font-size:13px;color:#1f6f6b;border-bottom:1px solid #e3d3b0}
+  #panel .role{color:#b5482f}
+  #panel .quote{border-left:4px solid #e1a730;background:#fff6dc;padding:8px 12px;border-radius:0 8px 8px 0}
+  button{background:#b5482f;border-radius:999px;font-weight:400;letter-spacing:.03em;transition:transform .12s,background .2s;box-shadow:0 2px 0 rgba(60,20,5,.35)}
+  button:hover{background:#cf5a3c;transform:translateY(-1px)}
+  button.alt{background:#1f6f6b}
+  button.alt:hover{background:#2a8a85}
+  #close{background:#3a2413;border-radius:50%;width:32px;height:32px;padding:0!important;margin-top:4px}
+  input,textarea{border-radius:10px;border:1px solid #d6c3a1;background:#fffdf7;font-family:"Lora",Georgia,serif}
+  #panel .ans{border-radius:10px;border:1px solid #ead9b6;background:#fffdf7}
+  #panel .x{border-radius:50%;background:#c9b79a;box-shadow:none}
+  #panel .cmp{border-bottom:1px solid #e3d3b0;padding:8px 0}
+  #panel .cmp b{color:#b5482f;font-family:"Marcellus",Georgia,serif;font-weight:400;font-size:17px}
+  #panel .cmp p{margin:3px 0 6px;font-size:15px}
+  #panel .cmp textarea{height:54px}
+  #panel .rub{border-left:4px solid #1f6f6b;padding:2px 0 2px 12px;margin:10px 0}
+  #panel .rub p{margin:2px 0}
+  #zone{background:rgba(252,247,236,.93);border:0;border-left:5px solid #b5482f;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.25);font-weight:400}
+  #progress{background:rgba(31,111,107,.92);border-radius:999px;padding:5px 12px}
+  #bar button{background:rgba(58,36,19,.88);border:0;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+  #bar button:hover{background:#b5482f}
+  #help{background:rgba(30,18,8,.72);border-radius:12px}
+  #prompt{border:0;background:#e1a730;color:#2b1808;box-shadow:0 6px 18px rgba(0,0,0,.35);font-family:"Marcellus",Georgia,serif;font-weight:400;cursor:pointer}
+  #tour{border:0;border-left:5px solid #1f6f6b;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  #toast{background:#1f6f6b;border-radius:999px}
+  #timer{top:92px;left:14px;background:#b5482f;color:#fff;border-radius:999px;padding:5px 14px;font:15px "Marcellus",Georgia,serif}
+  #timer.over{background:#3a2413;animation:blink 1s infinite}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes blink{50%{opacity:.45}}
+  /* a window docked beside a speaking character, or a bar under a scene that is being acted out */
+  #panel.dock{left:auto;right:18px;transform:translateY(-50%);width:min(430px,42vw)}
+  #panel.bar{top:auto;bottom:16px;transform:translateX(-50%);width:min(1000px,94vw);max-height:44vh}
+  #panel.bar h2{font-size:17px;margin-bottom:2px;color:#b5482f}
+  #panel.bar .role{margin:0;font-weight:600}
+  #panel.bar p{margin:5px 0}
+  .mobile #panel{padding:0 16px 14px}
+  .mobile #panel::before{margin:0 -16px 8px;height:5px}
+  .mobile #panel.dock{left:auto;right:6px;top:6px;transform:none;width:min(430px,50vw)}
+  .mobile #panel.bar{top:auto;bottom:6px;max-height:52vh;max-height:52dvh}
+  .mobile #timer{top:66px;font-size:12px}
+  /* cinematic title: the town turns slowly behind the card */
+  #start{background:linear-gradient(100deg,rgba(40,20,8,.9) 0%,rgba(40,20,8,.6) 50%,rgba(40,20,8,.12) 100%);justify-content:flex-start;padding-left:6vw}
+  #start .card{background:rgba(252,247,236,.97);border:0;border-top:6px solid #b5482f;border-radius:18px;box-shadow:0 24px 70px rgba(0,0,0,.55);animation:fadeIn .9s ease}
+  #start h1{font-weight:400;font-size:34px;color:#3a2413}
+  #start .worlds button{border-radius:12px}
+  @media (max-width:760px){#start{justify-content:center;padding-left:0}}
 </style>
 </head>
 <body>
@@ -118,7 +173,7 @@
 <div id="start">
   <div class="card">
     <h1>Rizal in the Metaverse</h1>
-    <p>A walk-through world of <i>Noli Me Tangere</i> and <i>El Filibusterismo</i>. <small>(version 3)</small></p>
+    <p>A walk-through world of <i>Noli Me Tangere</i> and <i>El Filibusterismo</i>. <small>(version 4)</small></p>
     <label for="inName">Your name</label>
     <input id="inName" maxlength="30" placeholder="e.g. Juan">
     <label for="inMembers">Group members and roles (one per line)</label>
@@ -142,6 +197,7 @@
   <div id="zone">Central Plaza</div>
   <div id="prompt" hidden></div>
   <div id="progress"></div>
+  <div id="timer" hidden></div>
   <div id="bar">
     <button data-a="menu">Menu</button>
     <button data-a="story">Story</button>
@@ -168,7 +224,7 @@
 
 /* ---------- saved data (stays in this browser) ---------- */
 const KEY = 'rizalMetaverse1';
-const save = { name: '', members: '', answers: {}, met: {}, seen: {} };
+const save = { name: '', members: '', answers: {}, met: {}, seen: {}, compare: {}, voices: [] };
 try { Object.assign(save, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
 function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} updateProgress(); }
 
@@ -182,14 +238,17 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
 document.body.appendChild(renderer.domElement);
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
   renderer.setSize(innerWidth, innerHeight);
 });
 
-const hemi = new THREE.HemisphereLight(0xffffff, 0x556644, 0.72);
-const sun = new THREE.DirectionalLight(0xfff2d6, 0.58);
+const hemi = new THREE.HemisphereLight(0xdfeeff, 0x6a5a40, 1.0);
+const sun = new THREE.DirectionalLight(0xffe9c4, 1.7);
 sun.position.set(40, 80, 30);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
@@ -199,7 +258,30 @@ scene.add(hemi, sun, sun.target);
 
 /* ---------- helpers ---------- */
 const mats = {};
-const M = c => mats[c] || (mats[c] = new THREE.MeshLambertMaterial({ color: c }));
+// colours are authored in sRGB and lit in linear space, then tone-mapped by the renderer
+const lin = c => new THREE.Color(c).convertSRGBToLinear();
+const M = c => mats[c] || (mats[c] = new THREE.MeshLambertMaterial({ color: lin(c) }));
+function ctex(canvas) { const t = new THREE.CanvasTexture(canvas); t.encoding = THREE.sRGBEncoding; return t; }
+// light, tintable surface patterns: the material colour gives the hue, the pattern gives the detail
+let tseed = 5;
+const trnd = () => (tseed = (tseed * 16807) % 2147483647) / 2147483647;
+const PAT = {
+  grass(k, s) { k.fillStyle = '#e6eede'; k.fillRect(0, 0, s, s); for (let i = 0; i < 1500; i++) { k.fillStyle = trnd() > 0.5 ? 'rgba(255,255,255,.55)' : 'rgba(50,90,35,.3)'; k.fillRect(trnd() * s, trnd() * s, 2, 4 + trnd() * 6); } },
+  dirt(k, s) { k.fillStyle = '#f2ede3'; k.fillRect(0, 0, s, s); for (let i = 0; i < 700; i++) { k.fillStyle = 'rgba(95,70,40,' + (0.08 + trnd() * 0.16) + ')'; k.beginPath(); k.arc(trnd() * s, trnd() * s, 1 + trnd() * 3.5, 0, 7); k.fill(); } },
+  pave(k, s) { k.fillStyle = '#b9b1a2'; k.fillRect(0, 0, s, s); for (let r = 0; r < 4; r++) for (let c = -1; c < 4; c++) { const v = 228 + trnd() * 24 | 0; k.fillStyle = 'rgb(' + v + ',' + (v - 3) + ',' + (v - 10) + ')'; k.fillRect(c * 64 + (r % 2 ? 32 : 0) + 2, r * 64 + 2, 60, 60); } },
+  tile(k, s) { k.fillStyle = '#f6eee9'; k.fillRect(0, 0, s, s); for (let r = 0; r < 8; r++) { k.fillStyle = 'rgba(70,25,12,.4)'; k.fillRect(0, r * 32 + 28, s, 4); k.fillStyle = 'rgba(70,25,12,.22)'; for (let c = 0; c < 9; c++) k.fillRect(c * 32 + (r % 2 ? 16 : 0), r * 32, 3, 30); } },
+  plaster(k, s) { k.fillStyle = '#f7f4ef'; k.fillRect(0, 0, s, s); for (let i = 0; i < 420; i++) { k.fillStyle = 'rgba(90,75,55,' + (0.03 + trnd() * 0.07) + ')'; k.fillRect(trnd() * s, trnd() * s, 3 + trnd() * 9, 2 + trnd() * 5); } },
+  planks(k, s) { k.fillStyle = '#f3ebdf'; k.fillRect(0, 0, s, s); for (let c = 0; c < 8; c++) { k.fillStyle = 'rgba(45,22,8,.4)'; k.fillRect(c * 32, 0, 3, s); k.fillStyle = 'rgba(45,22,8,' + trnd() * 0.12 + ')'; k.fillRect(c * 32 + 3, 0, 29, s); } },
+  floor(k, s) { for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) { k.fillStyle = (i + j) % 2 ? '#f6f2e9' : '#d2cabb'; k.fillRect(i * 128, j * 128, 128, 128); } k.strokeStyle = 'rgba(60,45,30,.35)'; k.lineWidth = 2; k.strokeRect(0, 0, 128, 128); k.strokeRect(128, 128, 128, 128); }
+};
+const patCanvas = {}, texMats = {};
+function texMat(c, kind, rx, ry) {
+  const key = c + kind + rx + '_' + ry;
+  if (texMats[key]) return texMats[key];
+  if (!patCanvas[kind]) { const cv = document.createElement('canvas'); cv.width = cv.height = 256; PAT[kind](cv.getContext('2d'), 256); patCanvas[kind] = cv; }
+  const t = ctex(patCanvas[kind]); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); t.anisotropy = 4;
+  return (texMats[key] = new THREE.MeshLambertMaterial({ color: lin(c), map: t }));
+}
 const colliders = [];
 const interact = [];
 const npcs = [];
@@ -249,7 +331,7 @@ function textSprite(lines, o) {
   k.fillRect(0, 0, c.width, c.height);
   k.fillStyle = o.fg || '#fff'; k.textAlign = 'center'; k.textBaseline = 'top';
   lines.forEach((l, i) => k.fillText(l, c.width / 2, pad + i * (fs + 8)));
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), depthTest: o.onTop ? false : true }));
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: ctex(c), depthTest: o.onTop ? false : true, toneMapped: false }));
   const hWorld = (o.h || 0.42) * lines.length + 0.1;
   s.scale.set(hWorld * c.width / c.height, hWorld, 1);
   return s;
@@ -269,36 +351,40 @@ function sign(lines, w, h, x, y, z, rot, bg, fg, post) {
   });
   const g = new THREE.Group();
   g.position.set(x, y, z); g.rotation.y = rot;
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c) }));
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: ctex(c), toneMapped: false }));
   m.position.z = 0.08; g.add(m);
   box(w + 0.25, h + 0.25, 0.12, 0x5a4030, 0, -(h + 0.25) / 2, 0, false, g);
   if (post) box(0.22, y, 0.22, 0x5a4030, 0, -y, -0.1, false, g);
   scene.add(g);
 }
+// the townspeople: rounded figures with large heads, arms that gesture and a head that turns
 function person(o) {
-  const g = new THREE.Group();
-  const add = (w, h, d, c, x, y, z) => box(w, h, d, c, x, y, z, false, g);
-  const hair = o.hair === undefined ? 0x1b1512 : o.hair;
-  g.userData.legs = [];
-  if (o.robe) add(0.82, 1.72, 0.56, o.robe, 0, 0, 0);
-  else if (o.skirt) { add(0.98, 0.95, 0.72, o.skirt, 0, 0, 0); add(0.7, 0.8, 0.4, o.body, 0, 0.95, 0); }
+  const g = new THREE.Group(), u = g.userData;
+  const part = (geo, c, x, y, z, parent) => { const m = new THREE.Mesh(geo, M(c)); m.position.set(x, y, z); m.castShadow = true; (parent || g).add(m); return m; };
+  const C = (rt, rb, h, s) => new THREE.CylinderGeometry(rt, rb, h, s || 14), S = (r, a, b) => new THREE.SphereGeometry(r, 18, 14, 0, Math.PI * 2, a || 0, b || Math.PI);
+  const hair = o.hair === undefined ? 0x1b1512 : o.hair, top = o.robe || o.body, skin = o.skin || 0xc68e5f;
+  u.legs = []; u.tops = [];
+  if (o.robe) u.tops.push(part(C(0.27, 0.5, 1.62, 18), o.robe, 0, 0.81, 0));
+  else if (o.skirt) { part(C(0.25, 0.64, 0.98, 20), o.skirt, 0, 0.49, 0); u.tops.push(part(C(0.29, 0.26, 0.66), o.body, 0, 1.3, 0)); }
   else {
-    g.userData.legs.push(add(0.28, 0.9, 0.3, o.legs || 0x33302c, -0.18, 0, 0), add(0.28, 0.9, 0.3, o.legs || 0x33302c, 0.18, 0, 0));
-    g.userData.body = add(0.72, 0.85, 0.4, o.body, 0, 0.9, 0);
+    u.legs.push(part(C(0.13, 0.12, 0.84, 10), o.legs || 0x33302c, -0.16, 0.42, 0), part(C(0.13, 0.12, 0.84, 10), o.legs || 0x33302c, 0.16, 0.42, 0));
+    u.body = part(C(0.3, 0.34, 0.82), o.body, 0, 1.22, 0); u.tops.push(u.body);
   }
-  const arm = o.robe || o.body;
-  add(0.2, 0.75, 0.25, arm, -0.5, 0.95, 0); add(0.2, 0.75, 0.25, arm, 0.5, 0.95, 0);
-  add(0.46, 0.46, 0.46, o.skin || 0xc68e5f, 0, 1.76, 0);
-  add(0.07, 0.07, 0.02, 0x111111, -0.11, 2.0, 0.235); add(0.07, 0.07, 0.02, 0x111111, 0.11, 2.0, 0.235);
+  const sh = part(S(0.33), top, 0, 1.6, 0); sh.scale.set(1, 0.42, 0.78); u.tops.push(sh);
+  const arm = s => {
+    const a = new THREE.Group(); a.position.set(s * 0.4, 1.58, 0); a.rotation.z = s * 0.12; g.add(a);
+    u.tops.push(part(C(0.09, 0.08, 0.68, 10), top, 0, -0.34, 0, a)); part(S(0.095), skin, 0, -0.72, 0, a); return a;
+  };
+  u.armL = arm(-1); u.armR = arm(1);
+  const head = new THREE.Group(); head.position.set(0, 2.0, 0); g.add(head); u.head = head;
+  part(S(0.33), skin, 0, 0, 0, head);
+  part(S(0.045), 0x1a1410, -0.12, 0.03, 0.3, head); part(S(0.045), 0x1a1410, 0.12, 0.03, 0.3, head);
   if (hair !== null) {
-    add(0.5, 0.14, 0.5, hair, 0, 2.2, 0); add(0.5, 0.32, 0.1, hair, 0, 1.94, -0.25);
-    if (o.longHair) add(0.5, 0.75, 0.12, hair, 0, 1.3, -0.3);
+    part(S(0.35, 0, Math.PI * 0.5), hair, 0, 0.03, -0.02, head);
+    if (o.longHair) part(C(0.3, 0.34, 0.72), hair, 0, -0.42, -0.14, head);
   }
-  if (o.hat === 'top') { add(0.74, 0.05, 0.74, 0x111111, 0, 2.34, 0); add(0.44, 0.42, 0.44, 0x111111, 0, 2.38, 0); }
-  if (o.hat === 'salakot') {
-    const cone = new THREE.Mesh(new THREE.ConeGeometry(0.62, 0.36, 12), M(0xb08a4a));
-    cone.position.set(0, 2.5, 0); g.add(cone);
-  }
+  if (o.hat === 'top') { part(C(0.44, 0.44, 0.04, 20), 0x111111, 0, 0.3, 0, head); part(C(0.27, 0.28, 0.36, 20), 0x111111, 0, 0.5, 0, head); }
+  if (o.hat === 'salakot') part(new THREE.ConeGeometry(0.58, 0.3, 20), 0xb08a4a, 0, 0.42, 0, head);
   if (o.small) g.scale.setScalar(0.68);
   return g;
 }
@@ -327,6 +413,7 @@ function keyScene(s) {
   const m = new THREE.Mesh(new THREE.OctahedronGeometry(0.5), s.mat);
   m.position.set(s.x, 2.9, s.z); scene.add(m); spinners.push(m);
   const tag = textSprite('KEY SCENE', { bg: 'rgba(122,59,46,.9)' }); tag.position.set(s.x, 3.9, s.z); scene.add(tag);
+  s.gem = m; s.tag = tag;
   SCENES.push(s);
   interact.push({ x: s.x, z: s.z, r: 2.6, mh: 5, label: 'Watch key scene: ' + s.title, open: () => showScene(s) });
 }
@@ -334,7 +421,7 @@ function keyScene(s) {
 function room(cx, cz, w, d, h, c, door, floorC, roofC, o) {
   o = o || {};
   const t = 0.5, dw = 3.4, x0 = cx - w / 2, x1 = cx + w / 2, z0 = cz - d / 2, z1 = cz + d / 2;
-  const seg = (ax, az, bx, bz) => box(Math.abs(bx - ax) + t, h, Math.abs(bz - az) + t, c, (ax + bx) / 2, 0, (az + bz) / 2, true);
+  const seg = (ax, az, bx, bz) => { box(Math.abs(bx - ax) + t, h, Math.abs(bz - az) + t, c, (ax + bx) / 2, 0, (az + bz) / 2, true).material = texMat(c, 'plaster', 3, 2); };
   const side = (name, ax, az, bx, bz) => {
     if ((o.skip || '').indexOf(name) >= 0) return;
     if (door.indexOf(name) < 0) { seg(ax, az, bx, bz); return; }
@@ -342,12 +429,12 @@ function room(cx, cz, w, d, h, c, door, floorC, roofC, o) {
     else { seg(ax, az, bx, cz - dw / 2 - t / 2); seg(ax, cz + dw / 2 + t / 2, bx, bz); box(t, h - 3.8, dw, c, ax, 3.8, cz); }
   };
   side('n', x0, z0, x1, z0); side('s', x0, z1, x1, z1); side('w', x0, z0, x0, z1); side('e', x1, z0, x1, z1);
-  box(w, 0.06, d, floorC, cx, 0.03, cz);
+  box(w, 0.06, d, floorC, cx, 0.03, cz).material = texMat(floorC, 'floor', Math.round(w / 3), Math.round(d / 3));
   box(w + 1.2, 0.35, d + 1.2, roofC, cx, h, cz);
   if (o.roofH !== 0) hipRoof(cx, cz, w + 1.6, d + 1.6, h + 0.35, o.roofH || 2.6, roofC);
 }
 function hipRoof(cx, cz, w, d, y, h, c) {
-  const g = new THREE.Group(), m = new THREE.Mesh(new THREE.ConeGeometry(1, h, 4), M(c));
+  const g = new THREE.Group(), m = new THREE.Mesh(new THREE.ConeGeometry(1, h, 4), texMat(c, 'tile', 6, 2));
   m.rotation.y = Math.PI / 4; m.castShadow = true; g.add(m);
   g.position.set(cx, y + h / 2, cz); g.scale.set(w / 1.4142, 1, d / 1.4142);
   scene.add(g);
@@ -355,8 +442,8 @@ function hipRoof(cx, cz, w, d, y, h, c) {
 // bahay na bato: stone ground floor, overhanging wooden upper floor with capiz windows, tiled hip roof
 function house(cx, cz, w, d, o) {
   o = o || {};
-  box(w, 3.2, d, o.stone || 0xddd3bd, cx, 0, cz, true);
-  box(w + 0.8, 2.8, d + 0.8, o.wood || 0x8a5a36, cx, 3.2, cz);
+  box(w, 3.2, d, o.stone || 0xddd3bd, cx, 0, cz, true).material = texMat(o.stone || 0xddd3bd, 'plaster', 3, 1);
+  box(w + 0.8, 2.8, d + 0.8, o.wood || 0x8a5a36, cx, 3.2, cz).material = texMat(o.wood || 0x8a5a36, 'planks', 3, 1);
   hipRoof(cx, cz, w + 2, d + 2, 6, 2.4, o.roof || 0x8c4a3a);
   const nx = Math.max(2, Math.floor(w / 2.2)), nz = Math.max(2, Math.floor(d / 2.2));
   for (let i = 0; i < nx; i++) {
@@ -422,10 +509,10 @@ function el(tag, props, kids) {
 }
 
 /* ---------- ground, paths, zones ---------- */
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), M(0x6fae5a));
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), texMat(0x7fbf64, 'grass', 90, 90));
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
-box(62, 0.04, 200, 0x7d7a55, 58, 0, 0);            // El Fili ground, drier
-box(170, 0.06, 5, 0xd9c79a, 0, 0, 0);              // east-west road
+box(62, 0.04, 200, 0x7d7a55, 58, 0, 0).material = texMat(0x8d8a62, 'grass', 14, 44);   // El Fili ground, drier
+box(170, 0.06, 5, 0xd9c79a, 0, 0, 0).material = texMat(0xe2d0a2, 'dirt', 42, 1);        // east-west road
 box(5, 0.06, 40, 0xd9c79a, 0, 0, 19);              // road to reflection zone
 const hubDisc = new THREE.Mesh(new THREE.CircleGeometry(11, 32), M(0xd9c79a));
 hubDisc.rotation.x = -Math.PI / 2; hubDisc.position.y = 0.07; scene.add(hubDisc);
@@ -448,7 +535,7 @@ info(10, -7.5, 'Read about José Rizal', 'Dr. José Rizal (1861–1896)', [
 box(1.2, 7, 1.2, 0xe8dcc0, -28, 0, -4.5, true); box(1.2, 7, 1.2, 0xe8dcc0, -28, 0, 4.5, true);
 box(1.4, 1.2, 10.4, 0xe8dcc0, -28, 7, 0);
 sign(['SAN DIEGO'], 6, 1.1, -27.2, 8.2, 0, Math.PI / 2, '#2f6b3a', '#fff');
-box(30, 0.08, 30, 0xcdbf9c, -55, 0, 0);            // town plaza
+box(30, 0.08, 30, 0xcdbf9c, -55, 0, 0).material = texMat(0xdccfae, 'pave', 8, 8);   // town plaza
 
 // kiosk where the fiesta luncheon is held
 [[-59.5, -4.5], [-50.5, -4.5], [-59.5, 4.5], [-50.5, 4.5]].forEach(p => box(0.4, 5.6, 0.4, 0xf2ead8, p[0], 0, p[1], true));
@@ -761,6 +848,11 @@ box(4, 0.06, 6, 0xd9c79a, 0, 0, -17);
 });
 bench(-5.9, -22.6, true); bench(5.9, -22.6, true);
 
+/* ---------- Then and Now table in the Reflection Zone ---------- */
+box(2.6, 0.9, 1.4, 0x8a5a36, 11, 0, 57, true); box(2.8, 0.06, 1.6, 0x1f6f6b, 11, 0.9, 57);
+sign(['THEN AND NOW', 'the novels and today'], 2.6, 1.1, 11, 2.1, 57.4, Math.PI, '#1f6f6b', '#fff', true);
+interact.push({ x: 11, z: 55.4, r: 2.6, mh: 3.4, label: 'Open the Then and Now table', open: () => showCompare() });
+
 /* ---------- portals between the worlds ---------- */
 portal(-9, 5.5, Math.PI / 2, 0x4caf50, 'Noli Me Tangere', [-33, 0, -Math.PI / 2]);
 portal(9, 5.5, Math.PI / 2, 0xe0533a, 'El Filibusterismo', [33, 0, Math.PI / 2]);
@@ -860,7 +952,7 @@ keyScene({ id: 'N4', x: -77.5, z: 3.9, title: 'Elias and Ibarra on the lake',
   ], q: 'Discuss: Who was right on the lake, Elias or Ibarra? How did suffering change their views?' });
 
 /* ---------- MANILA expanded: street, university, prison, secret room, retreat ---------- */
-box(22, 0.07, 9, 0x8f8a80, 76.5, 0, 0);                          // cobbled street
+box(22, 0.07, 9, 0x8f8a80, 76.5, 0, 0).material = texMat(0xa39e94, 'pave', 7, 3);    // cobbled street
 house(70, -9.5, 8, 7, { label: 'BAZAAR OF QUIROGA', face: 's', stone: 0xc9bfa8, wood: 0x5a3a2a, roof: 0x5a2a22 });
 house(70, 9.5, 8, 7, { label: 'OFFICE OF DON CUSTODIO', face: 'n', stone: 0xc9bfa8, wood: 0x5a3a2a, roof: 0x5a2a22 });
 house(79.5, 9.5, 8, 7, { label: 'EL GRITO DE LA INTEGRIDAD', face: 'n', stone: 0xc9bfa8, wood: 0x6a4630, roof: 0x5a2a22 });
@@ -1072,8 +1164,8 @@ function board(id, x, z, rot, title, question, color, big) {
   box(W + 0.3, H + 0.3, 0.2, 0x5a4030, 0, 1.1, 0, false, g);
   box(0.3, 1.3, 0.3, 0x5a4030, -W / 2 + 0.5, 0, 0, false, g); box(0.3, 1.3, 0.3, 0x5a4030, W / 2 - 0.5, 0, 0, false, g);
   const c = document.createElement('canvas'); c.width = big ? 2048 : 1024; c.height = 640;
-  const tex = new THREE.CanvasTexture(c);
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: tex }));
+  const tex = ctex(c);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }));
   m.position.set(0, 1.25 + H / 2, 0.12); g.add(m);
   scene.add(g);
   colliders.push({ a: x - 0.6, b: x + 0.6, c: z - 0.6, d: z + 0.6 });
@@ -1171,16 +1263,38 @@ function speak(text) {
 
 /* ---------- panels ---------- */
 const panel = document.getElementById('panel');
-let panelOpen = false;
-function openPanel(title, build) {
-  panel.innerHTML = '';
+// panelHook runs once when the open window closes; talker is the character now speaking; camFocus overrides the follow camera
+let panelOpen = false, panelHook = null, talker = null, camFocus = null, typer = null;
+function runHook() { const f = panelHook; panelHook = null; if (f) f(); }
+function typeInto(node, text) {
+  clearInterval(typer); let i = 0; node.textContent = '';
+  const end = () => { clearInterval(typer); typer = null; node.textContent = text; };
+  typer = setInterval(() => { i += 2; node.textContent = text.slice(0, i); if (i >= text.length) end(); }, 22);
+  node.onclick = end;
+}
+// move the camera to a clear spot looking at (x, z); shift pushes the subject to the left of the screen
+function focusOn(x, z, o) {
+  o = o || {};
+  const p = player.position, base = o.base === undefined ? Math.atan2(p.x - x, p.z - z) : o.base, dist = o.dist || 3.8, sh = o.shift || 0;
+  for (const a of o.base === undefined ? [0.55, -0.55, 0.15, 1.0, -1.0, 1.6, -1.6, 2.4, 3.14] : [0, 0.35, -0.35, 0.8, -0.8, 1.4, -1.4, 2.2, 3.14]) {
+    const cx = x + Math.sin(base + a) * dist, cz = z + Math.cos(base + a) * dist;
+    if (hit(cx, cz, 0.3) || hit((cx + x) / 2, (cz + z) / 2, 0.05)) continue;
+    const fx = (x - cx) / dist, fz = (z - cz) / dist;
+    camFocus = { x: cx, y: o.y || 2.1, z: cz, lx: x - fz * sh, ly: o.ly || 1.8, lz: z + fx * sh };
+    return;
+  }
+  camFocus = null;
+}
+function openPanel(title, build, cls) {
+  runHook();
+  panel.innerHTML = ''; panel.className = cls || '';
   const x = el('button', { id: 'close', textContent: '×', title: 'Close (Esc)' }); x.onclick = closePanel;
   panel.append(x, el('h2', { textContent: title }));
   build(panel);
   panel.hidden = false; panelOpen = true;
   for (const k in keys) keys[k] = false;
 }
-function closePanel() { panel.hidden = true; panelOpen = false; }
+function closePanel() { panel.hidden = true; panelOpen = false; clearInterval(typer); runHook(); }
 function showNPC(d) {
   openPanel(d.name, p => {
     p.append(el('p', { className: 'role', textContent: d.role }), el('p', { textContent: d.text }), el('p', { className: 'quote', textContent: d.quote }));
@@ -1191,7 +1305,7 @@ function showNPC(d) {
       const reply = el('p', { className: 'quote' }); reply.hidden = true;
       tk.ask.forEach(qa => {
         const bq = el('button', { className: 'alt ask', textContent: qa[0] });
-        bq.onclick = () => { reply.hidden = false; reply.textContent = '"' + qa[1] + '"'; };
+        bq.onclick = () => { reply.hidden = false; typeInto(reply, '"' + qa[1] + '"'); };
         p.append(bq);
       });
       p.append(reply, el('h3', { textContent: 'Creative interpretation' }));
@@ -1200,27 +1314,63 @@ function showNPC(d) {
     const b = el('button', { textContent: 'Act as this character' });
     b.onclick = () => {
       actingAs = d.name.replace(' (child)', ''); refreshTag();
-      if (player.userData.body) player.userData.body.material = M(d.look.body || d.look.robe);
+      player.userData.tops.forEach(m => { m.material = M(d.look.body || d.look.robe); });
       closePanel();
     };
     const r = el('button', { className: 'alt', textContent: 'Be myself again' });
     r.style.marginLeft = '8px';
-    r.onclick = () => { actingAs = ''; refreshTag(); if (player.userData.body) player.userData.body.material = M(0x2563a8); closePanel(); };
-    p.append(b, r, el('p', { className: 'dim', textContent: 'Creative interpretation: take this role, then press Enter to speak as the character.' }));
-  });
+    r.onclick = () => { actingAs = ''; refreshTag(); player.userData.tops.forEach(m => { m.material = M(0x2563a8); }); closePanel(); };
+    p.append(b, r, el('p', { className: 'dim', textContent: 'Creative interpretation: take this role, then press Enter to speak as the character. Lines spoken in a role are kept in the Output.' }));
+  }, 'dock');
+  // the character turns to the camera and gestures while the window is open
+  const rec = npcs.find(n => n.d === d);
+  talker = rec;
+  focusOn(rec.g.position.x, rec.g.position.z, { shift: innerWidth > 700 ? 1.0 : 0, ly: d.look.small ? 1.25 : 1.8, dist: d.look.small ? 3 : 3.8 });
+  panelHook = () => { talker = null; camFocus = null; };
 }
+/* ---------- key scenes are acted out: the cast walks to the spot and the camera cuts to whoever speaks ---------- */
+const ALIAS = { 'Ibarra': 'Crisostomo Ibarra' };
+const sceneActor = name => npcs.find(n => n.d.name === (ALIAS[name] || name));
+function stageScene(s) {
+  const names = []; s.lines.forEach(l => { if (names.indexOf(l[0]) < 0) names.push(l[0]); });
+  const cast = names.map(sceneActor).filter(Boolean), p = player.position;
+  if (Math.hypot(p.x - s.x, p.z - s.z) > 9) for (let i = 0; i < 12; i++) {
+    const a = i * 0.52, x = s.x + Math.sin(a) * 4.2, z = s.z + Math.cos(a) * 4.2;
+    if (!hit(x, z, 0.6)) { p.set(x, 0, z); yaw = a + Math.PI; break; }
+  }
+  const base = Math.atan2(p.x - s.x, p.z - s.z) + Math.PI, offs = [0, 0.85, -0.85, 1.7, -1.7, 2.5, -2.5];
+  let slot = 0;
+  cast.forEach(n => {
+    n.home = { x: n.g.position.x, z: n.g.position.z };
+    while (slot < offs.length) {
+      const a = base + offs[slot++], x = s.x + Math.sin(a) * 1.9, z = s.z + Math.cos(a) * 1.9;
+      if (!hit(x, z, 0.45)) { n.g.position.x = x; n.g.position.z = z; break; }
+    }
+    n.staged = true; n.stageRot = Math.atan2(s.x - n.g.position.x, s.z - n.g.position.z);
+  });
+  return cast;
+}
+function unstage(cast) { cast.forEach(n => { n.g.position.x = n.home.x; n.g.position.z = n.home.z; n.staged = false; }); talker = null; camFocus = null; }
 // s is a key scene, or a story with ready-made s.pages
 function showScene(s) {
   const title = s.title, question = s.q || '';
   const lines = s.pages || [['About this scene', 'Novel reference: ' + s.ref + '\n\n' + s.context + '\n\nCharacters: ' + s.cast]]
     .concat(s.lines, [['Key takeaway', s.take]]);
   let i = 0;
+  runHook();
+  const acted = !!s.id, cast = acted ? stageScene(s) : [];
   openPanel(title, p => {
     const who = el('p', { className: 'role' }), line = el('p'), q = el('p', { className: 'q' }), count = el('p', { className: 'dim' });
     const back = el('button', { className: 'alt', textContent: 'Back' }), next = el('button', { textContent: 'Next' });
     next.style.marginLeft = '8px';
     const render = () => {
-      who.textContent = lines[i][0]; line.textContent = lines[i][1];
+      who.textContent = lines[i][0]; typeInto(line, lines[i][1]);
+      if (acted) {
+        const a = sceneActor(lines[i][0]); talker = a && a.staged ? a : null;
+        // the speaker faces the middle of the group, so the camera looks at them from across the circle
+        if (talker) focusOn(a.g.position.x, a.g.position.z, { base: Math.atan2(s.x - a.g.position.x, s.z - a.g.position.z), dist: 4.4, y: 2.0, ly: a.d.look.small ? 0.7 : 1.15 });
+        else focusOn(s.x, s.z, { dist: 7.5, y: 3.8, ly: 0.4 });
+      }
       count.textContent = 'Part ' + (i + 1) + ' of ' + lines.length + '  •  lines are retold in the group\'s own words';
       q.textContent = i === lines.length - 1 ? question : '';
       if (i === lines.length - 1 && s.id) markSeen(s.id);
@@ -1229,7 +1379,8 @@ function showScene(s) {
     back.onclick = () => { if (i > 0) { i--; render(); } };
     next.onclick = () => { if (i < lines.length - 1) { i++; render(); } else closePanel(); };
     p.append(who, line, q, back, next, count); render();
-  });
+  }, acted ? 'bar' : '');
+  if (acted) panelHook = () => unstage(cast);
 }
 function showBoard(id, title, question) {
   openPanel(title, p => {
@@ -1282,8 +1433,12 @@ function showGuide() {
       const ul = el('ul'); sec[1].forEach(s => ul.append(el('li', { textContent: s })));
       p.append(el('h3', { textContent: sec[0] }), ul);
     });
+    p.append(el('h3', { textContent: 'Debate timer' }), el('p', { className: 'dim', textContent: 'The timer stays on screen after this guide is closed.' }));
+    [['2:00 opening', 120, ''], ['1:00 rebuttal', 60, ''], ['Stop timer', 0, 'alt']].forEach(t => { const x = el('button', { className: t[2], textContent: t[0] }); x.style.marginRight = '6px'; x.onclick = () => startTimer(t[1]); p.append(x); });
+    p.append(el('h3', { textContent: 'Tools' }));
     const b = el('button', { textContent: 'Start guided walkthrough' }); b.onclick = () => tourGo(0);
-    p.append(b);
+    const b2 = el('button', { className: 'alt', textContent: 'Then and Now table' }); b2.style.marginLeft = '6px'; b2.onclick = showCompare;
+    p.append(b, b2);
   });
 }
 
@@ -1294,7 +1449,8 @@ function counts() {
     met: npcs.filter(n => save.met[n.d.name]).length, metAll: npcs.length,
     seen: SCENES.filter(s => save.seen[s.id]).length, seenAll: SCENES.length,
     booths: ids.filter(k => !boards[k].big && has(k)).length, boothsAll: ids.filter(k => !boards[k].big).length,
-    refl: ids.filter(k => boards[k].big && has(k)).length, reflAll: ids.filter(k => boards[k].big).length
+    refl: ids.filter(k => boards[k].big && has(k)).length, reflAll: ids.filter(k => boards[k].big).length,
+    cmp: COMPARE.filter(r => (save.compare[r.id] || '').trim()).length, cmpAll: COMPARE.length, voices: save.voices.length
   };
 }
 function updateProgress() {
@@ -1319,6 +1475,63 @@ function toast(msg) {
   clearTimeout(toast.timer); toast.timer = setTimeout(() => { t.hidden = true; }, 3500);
 }
 
+/* ---------- Then and Now table, assessment criteria, debate timer ---------- */
+const COMPARE = [
+  { id: 'a', issue: 'Power that answers to no one', novel: 'A parish priest can order a grave emptied, and no court in the colony will hear the complaint (Noli).' },
+  { id: 'b', issue: 'Justice that depends on who you know', novel: 'After the posters, the students with patrons walk free in days. Basilio, with none, waits in a cell (Fili).' },
+  { id: 'c', issue: 'Schooling kept out of reach', novel: 'San Diego has no schoolhouse. The academy of Spanish is handed to the very friars who opposed it.' },
+  { id: 'd', issue: 'Farmers and their land', novel: 'Kabesang Tales clears a field with his own hands and loses it to an estate with better lawyers (Fili).' },
+  { id: 'e', issue: 'Being ashamed of one\'s own', novel: 'Doña Victorina hides her origins under rice powder and broken Spanish (Noli).' }
+];
+const RUBRIC = [
+  ['Creativity & Design', 30, 'How engaging and symbolic is the metaverse space?'],
+  ['Content Accuracy', 30, 'Faithfulness to Rizal\'s novels and historical context.'],
+  ['Collaboration & Participation', 20, 'Equal contribution of group members.'],
+  ['Reflection & Insight', 20, 'Depth of analysis and personal connection.']
+];
+function showCompare() {
+  openPanel('Then and Now', p => {
+    p.append(el('p', { className: 'dim', textContent: 'For each social issue in the novels, write a present-day reality that matches it. Name something specific: a place, a practice, a recent event.' }));
+    COMPARE.forEach(r => {
+      const t = el('textarea', { value: save.compare[r.id] || '', placeholder: 'Today: …', maxLength: 300 });
+      t.onchange = () => { save.compare[r.id] = t.value; persist(); };
+      p.append(el('div', { className: 'cmp' }, [el('b', { textContent: r.issue }), el('p', { textContent: 'In the novels: ' + r.novel }), t]));
+    });
+    const b = el('button', { textContent: 'Save the table' });
+    b.onclick = () => { p.querySelectorAll('textarea').forEach(t => t.onchange()); toast('Table saved'); };
+    p.append(b, el('p', { className: 'dim', textContent: 'Saved in this browser on this computer only.' }));
+  });
+}
+function evidence() {
+  const c = counts(), names = {};
+  Object.keys(save.answers).forEach(k => save.answers[k].forEach(a => { names[a.n] = 1; }));
+  save.voices.forEach(v => { names[v.n] = 1; });
+  return [
+    'Two walkable worlds joined by portals; ' + c.seen + ' of ' + c.seenAll + ' key scenes acted out in the town; symbols explained in place (lamp, Bapor Tabo, empty grave).',
+    c.met + ' of ' + c.metAll + ' characters consulted; every scene carries its chapter reference; the whole story is posted in the Story Hall.',
+    Object.keys(names).length + ' different members have contributed text; ' + c.voices + ' lines spoken in character.',
+    c.refl + ' of ' + c.reflAll + ' reflection boards used; ' + c.booths + ' of ' + c.boothsAll + ' booths answered; ' + c.cmp + ' of ' + c.cmpAll + ' rows of Then and Now written.'
+  ];
+}
+function rubricInto(p) {
+  const ev = evidence();
+  RUBRIC.forEach((r, i) => p.append(el('div', { className: 'rub' }, [el('b', { textContent: r[0] + '  (' + r[1] + '%)' }), el('p', { textContent: r[2] }), el('p', { className: 'dim', textContent: 'Evidence so far: ' + ev[i] })])));
+}
+function showRubric() {
+  openPanel('Assessment criteria', p => {
+    rubricInto(p);
+    p.append(el('p', { className: 'dim', textContent: 'The percentages are the ones set by the teacher. The evidence lines only count what the group has done here; they are not a grade.' }));
+  });
+}
+let timerInt = null;
+function startTimer(sec) {
+  const chip = document.getElementById('timer'); clearInterval(timerInt);
+  if (!sec) { chip.hidden = true; return; }
+  const end = Date.now() + sec * 1000; chip.hidden = false;
+  const tickT = () => { const r = Math.max(0, Math.round((end - Date.now()) / 1000)); chip.textContent = 'Debate  ' + Math.floor(r / 60) + ':' + ('0' + r % 60).slice(-2); chip.classList.toggle('over', r === 0); if (!r) clearInterval(timerInt); };
+  tickT(); timerInt = setInterval(tickT, 500);
+}
+
 /* ---------- menus ---------- */
 const sceneOrder = () => SCENES.slice().sort((a, b) => 'NF'.indexOf(a.id[0]) - 'NF'.indexOf(b.id[0]) || a.id.localeCompare(b.id));
 function rowItem(done, text, btn, fn) {
@@ -1333,7 +1546,7 @@ function showMenu() {
       .forEach(w => { const b = el('button', { textContent: w[0] }); b.onclick = () => tp(w[1][0], w[1][1], w[1][2]); g1.append(b); });
     p.append(g1, el('h3', { textContent: 'Open' }));
     const g2 = el('div', { className: 'grid' });
-    [['Story of both novels (B)', showStoryMenu], ['Travel to a place (T)', showTravel], ['Scenes and progress (J)', showJournal], ['Moderator guide (M)', showGuide], ['Creative output (P)', showOutput], ['Guided walkthrough', () => tourGo(0)], ['Save screenshot (K)', () => { closePanel(); setTimeout(snap, 350); }]]
+    [['Story of both novels (B)', showStoryMenu], ['Travel to a place (T)', showTravel], ['Scenes and progress (J)', showJournal], ['Moderator guide (M)', showGuide], ['Creative output (P)', showOutput], ['Guided walkthrough', () => tourGo(0)], ['Then and Now table', showCompare], ['Assessment criteria', showRubric], ['Save screenshot (K)', () => { closePanel(); setTimeout(snap, 350); }]]
       .forEach(a => { const b = el('button', { className: 'alt', textContent: a[0] }); b.onclick = a[1]; g2.append(b); });
     p.append(g2, el('h3', { textContent: 'Controls' }));
     const ul = el('ul');
@@ -1411,6 +1624,13 @@ function summaryText() {
     if (!a.length) L.push('  (no answers yet)');
     a.forEach(it => L.push('  - ' + it.n + ': ' + it.t));
   });
+  L.push('', 'THEN AND NOW');
+  COMPARE.forEach(r => L.push('  ' + r.issue, '     In the novels: ' + r.novel, '     Today: ' + ((save.compare[r.id] || '').trim() || '(not yet written)')));
+  L.push('', 'LINES SPOKEN IN CHARACTER');
+  if (!save.voices.length) L.push('  (none yet)');
+  save.voices.forEach(v => L.push('  - ' + v.n + ' as ' + v.c + ': ' + v.t));
+  L.push('', 'ASSESSMENT CRITERIA AND EVIDENCE');
+  const ev = evidence(); RUBRIC.forEach((r, i) => L.push('  ' + r[0] + ' (' + r[1] + '%): ' + r[2], '     ' + ev[i]));
   return L.join('\n');
 }
 function snap() {
@@ -1435,6 +1655,7 @@ function showOutput() {
       a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
     };
     g.append(b1, b2, b3); p.append(g);
+    p.append(el('h3', { textContent: 'Assessment criteria' })); rubricInto(p);
     p.append(el('h3', { textContent: 'Recording the walkthrough video' }),
       el('p', { textContent: 'This world does not record video by itself. Use a screen recorder: on Windows press Win + Alt + R (Xbox Game Bar) to start and stop, or use OBS. Start the recorder, start the guided walkthrough, and press N or "Next stop" to move from place to place while the group discusses.' }));
   });
@@ -1462,7 +1683,7 @@ addEventListener('keydown', e => {
   if (!started) return;
   if (e.key === 'Escape') { closePanel(); say.hidden = true; say.blur(); return; }
   if (document.activeElement === say) {
-    if (e.key === 'Enter') { const v = say.value.trim(); if (v) speak(v); say.value = ''; say.hidden = true; say.blur(); }
+    if (e.key === 'Enter') { const v = say.value.trim(); if (v) { speak(v); if (actingAs) { save.voices.push({ c: actingAs, n: save.name, t: v }); persist(); } } say.value = ''; say.hidden = true; say.blur(); }
     return;
   }
   if (typing() || panelOpen) return;
@@ -1566,7 +1787,8 @@ const hit = (x, z, r) => {
 };
 const SKY = { day: new THREE.Color(0x9fd3ff), dusk: new THREE.Color(0xd9865a), dark: new THREE.Color(0x0d0b12), calm: new THREE.Color(0xbfe6d8) };
 const zoneEl = document.getElementById('zone'), promptEl = document.getElementById('prompt');
-let camDist = 7, camMax = 7, last = performance.now(), walkT = 0;
+let camDist = 7, camMax = 7, last = performance.now(), walkT = 0, lastFocus = null, camEase = 0;
+const camP = new THREE.Vector3(0, 4, -3), camL = new THREE.Vector3(0, 1.7, 6), tmpV = new THREE.Vector3();
 const pointer = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.6, 4), new THREE.MeshBasicMaterial({ color: 0xffd23f }));
 pointer.rotation.x = Math.PI; pointer.visible = false; scene.add(pointer);
 
@@ -1589,6 +1811,7 @@ function tick(now) {
     }
     const sw = dir ? Math.sin(walkT) * 0.55 : 0;
     player.userData.legs[0].rotation.x = sw; player.userData.legs[1].rotation.x = -sw;
+    player.userData.armL.rotation.x = sw; player.userData.armR.rotation.x = -sw;
   }
   player.rotation.y = yaw;
 
@@ -1596,34 +1819,50 @@ function tick(now) {
   let want = camMax;
   for (let d = 1; d <= camMax; d += 0.4) { if (hit(p.x - Math.sin(yaw) * d, p.z - Math.cos(yaw) * d, 0.25)) { want = Math.max(1.2, d - 0.6); break; } }
   camDist += (want - camDist) * Math.min(1, dt * 8);
-  camera.position.set(p.x - Math.sin(yaw) * camDist, 1.9 + camDist * 0.3, p.z - Math.cos(yaw) * camDist);
-  camera.lookAt(p.x + Math.sin(yaw) * 2, 1.7, p.z + Math.cos(yaw) * 2);
+  // a focus (conversation or acted scene) eases the camera away from the player and back again
+  const cf = camFocus;
+  if (cf !== lastFocus) { lastFocus = cf; camEase = 1.5; }
+  camEase = Math.max(0, camEase - dt);
+  const ck = camEase > 0 ? 1 - Math.exp(-dt * 4.5) : 1;
+  if (cf) { camP.lerp(tmpV.set(cf.x, cf.y, cf.z), ck); camL.lerp(tmpV.set(cf.lx, cf.ly, cf.lz), ck); }
+  else {
+    camP.lerp(tmpV.set(p.x - Math.sin(yaw) * camDist, 1.9 + camDist * 0.3, p.z - Math.cos(yaw) * camDist), ck);
+    camL.lerp(tmpV.set(p.x + Math.sin(yaw) * 2, 1.7, p.z + Math.cos(yaw) * 2), ck);
+  }
+  camera.position.copy(camP); camera.lookAt(camL);
+  // before the visit starts, the camera circles the town plaza behind the title card
+  if (!started) { const a = now / 11000; camera.position.set(-55 + Math.cos(a) * 44, 19, Math.sin(a) * 44); camera.lookAt(-55, 2.5, 0); }
 
   // zone, sky and light
   const inCellar = p.x > 46 && p.x < 64 && p.z > 21 && (p.z < 35 || (p.z < 46.5 && p.x > 50 && p.x < 60));
   const inFili = p.x > 26, inNoli = p.x < -26, inRefl = p.z > 37 && Math.abs(p.x) < 14;
   const sky = inCellar ? SKY.dark : inFili ? SKY.dusk : inRefl ? SKY.calm : SKY.day;
-  scene.background.lerp(sky, 0.04); scene.fog.color.copy(scene.background);
-  hemi.intensity += ((inCellar ? 0.22 : inFili ? 0.6 : 0.72) - hemi.intensity) * 0.05;
-  sun.intensity += ((inCellar ? 0.05 : inFili ? 0.42 : 0.58) - sun.intensity) * 0.05;
+  scene.background.lerp(sky, 0.04); scene.fog.color.copy(scene.background).convertSRGBToLinear();
+  hemi.intensity += ((inCellar ? 0.3 : inFili ? 0.75 : 1.0) - hemi.intensity) * 0.05;
+  sun.intensity += ((inCellar ? 0.05 : inFili ? 1.0 : 1.7) - sun.intensity) * 0.05;
   zoneEl.textContent = inCellar ? 'El Filibusterismo — Underground Meeting Place' : inFili ? 'El Filibusterismo — Manila'
     : inNoli ? 'Noli Me Tangere — Town of San Diego' : inRefl ? 'Reflection Zone' : 'Central Plaza';
 
   // characters
   const t = now / 1000;
-  if (sisa) {
+  if (sisa && !sisa.staged) {
     sisa.g.position.x = -62 + Math.sin(t * 0.35) * 5; sisa.g.position.z = 10 + Math.sin(t * 0.7) * 1.5;
   }
   npcs.forEach(n => {
-    const dx = p.x - n.g.position.x, dz = p.z - n.g.position.z;
-    const target = dx * dx + dz * dz < 36 ? Math.atan2(dx, dz) : (n === sisa ? Math.atan2(Math.cos(t * 0.35), 0.4 * Math.cos(t * 0.7)) : n.base);
+    const dx = p.x - n.g.position.x, dz = p.z - n.g.position.z, u = n.g.userData, tk = n === talker ? 1 : 0, ek = Math.min(1, dt * 6);
+    // the speaker raises a hand and nods; everyone else stands easy
+    u.armR.rotation.x += ((-1.0 - Math.sin(t * 4.2) * 0.4) * tk - u.armR.rotation.x) * ek;
+    u.armL.rotation.x += (-0.3 * tk - u.armL.rotation.x) * ek;
+    u.head.rotation.x = Math.sin(t * 3.1) * 0.07 * tk; u.head.rotation.z = Math.sin(t * 1.3 + n.g.position.x) * 0.035;
+    const target = n.staged ? n.stageRot : n === talker && camFocus ? Math.atan2(camFocus.x - n.g.position.x, camFocus.z - n.g.position.z)
+      : dx * dx + dz * dz < 36 ? Math.atan2(dx, dz) : (n === sisa ? Math.atan2(Math.cos(t * 0.35), 0.4 * Math.cos(t * 0.7)) : n.base);
     let diff = target - n.g.rotation.y;
     diff = Math.atan2(Math.sin(diff), Math.cos(diff));
     n.g.rotation.y += diff * Math.min(1, dt * 5);
   });
   spinners.forEach(s => { s.rotation.y = t * 2; s.position.y = 2.9 + Math.sin(t * 2) * 0.15; });
-  lampLight.intensity = 1 + Math.sin(t * 7) * 0.12;
-  torch1.intensity = 1.2 + Math.sin(t * 11) * 0.2; torch2.intensity = 1.2 + Math.cos(t * 9) * 0.2;
+  lampLight.intensity = 2.4 + Math.sin(t * 7) * 0.25;
+  torch1.intensity = 2.8 + Math.sin(t * 11) * 0.4; torch2.intensity = 2.8 + Math.cos(t * 9) * 0.4;
   if (bubble && now > bubbleUntil) { player.remove(bubble); bubble = null; }
 
   // nearest thing to interact with
@@ -1636,10 +1875,14 @@ function tick(now) {
   if (nearest) promptEl.textContent = 'Press E: ' + nearest.label;
 
   // floating arrow over whatever E will open
-  pointer.visible = !!nearest && started;
+  // name tags, scene markers and the arrow step aside while the camera is on a conversation or a scene
+  const clear = !camFocus;
+  npcs.forEach(n => { n.tag.visible = clear; }); SCENES.forEach(s => { s.gem.visible = s.tag.visible = clear; });
+  if (playerTag) playerTag.visible = clear;
+  pointer.visible = !!nearest && started && clear;
   if (nearest) pointer.position.set(nearest.x, (nearest.mh || 4.5) + Math.sin(t * 5) * 0.15, nearest.z);
   portals.forEach((d, i) => { d.material.opacity = 0.3 + Math.sin(t * 3 + i) * 0.12; });
-  secretLight.intensity = 1 + Math.sin(t * 8) * 0.15;
+  secretLight.intensity = 2.4 + Math.sin(t * 8) * 0.3;
   // the shadow area follows the player
   sun.position.set(p.x + 40, 80, p.z + 30); sun.target.position.set(p.x, 0, p.z);
 

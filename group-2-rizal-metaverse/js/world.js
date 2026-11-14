@@ -694,7 +694,8 @@ const W = (function () {
     canvas.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); });
     canvas.addEventListener('pointermove', e => {
       if (!drag || cam.attract) return;
-      cam.tyaw += (e.clientX - drag.x) * 0.0042; cam.tpitch = Math.max(-0.7, Math.min(0.7, cam.tpitch + (e.clientY - drag.y) * 0.0036)); drag.x = e.clientX; drag.y = e.clientY;
+      // drag left looks left, drag up looks up
+      cam.tyaw -= (e.clientX - drag.x) * 0.0042; cam.tpitch = Math.max(-0.7, Math.min(0.7, cam.tpitch - (e.clientY - drag.y) * 0.0036)); drag.x = e.clientX; drag.y = e.clientY;
     });
     canvas.addEventListener('pointerup', () => { drag = null; }); canvas.addEventListener('pointercancel', () => { drag = null; });
     setRoom('rotunda', 0); frame();
