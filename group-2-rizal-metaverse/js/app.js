@@ -336,7 +336,7 @@ const App = (function () {
 
   function catalogueText() {
     const c = counts(), L = [], ev = evidence();
-    L.push('THE RIZAL LEGACY EXPERIENCE', 'Rizal in the Metaverse: exhibition catalogue of the group', '');
+    L.push('THE RIZAL LEGACY EXPERIENCE', 'Rizal in the Metaverse: exhibition catalogue of the Group of Gomez', '');
     L.push('THE GROUP'); ROLES.forEach(r => L.push('  ' + r.name + ': ' + (S.roles[r.id] || '-'))); L.push('');
     L.push('THE VIRTUAL ENVIRONMENT', '  A museum with a central rotunda and three wings.',
       '  Wing I, Historical Gallery (Noli Me Tangere): gallery with a scale model of the San Diego plaza, church interior, classroom and ancestral sala, scene theatre.',

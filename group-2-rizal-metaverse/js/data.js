@@ -1,5 +1,5 @@
 'use strict';
-/* Content of The Rizal Legacy Experience (Group 2). Text only; no 3D or interface code here. */
+/* Content of The Rizal Legacy Experience (Group of Gomez). Text only; no 3D or interface code here. */
 
 const ROLES = [
   { id: 'builder', name: 'World Builder', duty: 'Leads the walk through the rooms and explains why each space was designed the way it is.' },
