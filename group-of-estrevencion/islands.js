@@ -186,21 +186,31 @@ function signpost(p, text, big) {
   return { board: b, text: t };
 }
 const SKIN = 0xe2b58a;
-// Peg-doll people: a cone body, a round head
+// People with a body, arms and legs, and a large round head
 function doll(kind, color, isPlayer) {
-  const g = new T.Group(), wide = kind === 'woman' ? 0.56 : kind === 'priest' ? 0.5 : 0.42;
+  const g = new T.Group(), u = g.userData, base = new T.Color(color), top = mat(base.getHex());
   const sh = new T.Mesh(new T.CircleGeometry(0.55, 12), new T.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false })); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh);
-  const b = new T.Group(); g.add(b); g.userData.body = b;
-  cyl(0.17, wide, 1.08, mat(new T.Color(color).getHex()), 0, 0, 0, 9, b);
-  if (kind === 'priest') cyl(0.2, 0.2, 0.09, 0xf5f1e6, 0, 0.98, 0, 9, b);
-  ball(0.28, SKIN, 0, 1.36, 0, b);
+  const b = new T.Group(); g.add(b); u.body = b; u.legs = []; u.arms = [];
+  // a limb hangs from its joint, so turning the joint swings it
+  const limb = (x, y, len, r, c, endC, endR) => { const j = new T.Group(); j.position.set(x, y, 0); b.add(j); cyl(r, r * 0.88, len, c, 0, -len, 0, 7, j); ball(endR, endC, 0, -len, endR * 0.3, j); return j; };
+  let sleeve = top;
+  if (kind === 'priest') { cyl(0.2, 0.44, 1.04, top, 0, 0, 0, 9, b); cyl(0.2, 0.2, 0.08, 0xf5f1e6, 0, 0.98, 0, 9, b); }
+  else if (kind === 'woman') { sleeve = mat(base.clone().lerp(new T.Color(0xffffff), 0.6).getHex()); cyl(0.2, 0.54, 0.68, top, 0, 0, 0, 10, b); cyl(0.24, 0.2, 0.4, sleeve, 0, 0.66, 0, 8, b); }
+  else { [-0.13, 0.13].forEach(x => u.legs.push(limb(x, 0.56, 0.5, 0.1, 0x3a3430, 0x241c18, 0.11))); cyl(0.25, 0.27, 0.54, top, 0, 0.52, 0, 8, b); }
+  [-1, 1].forEach(s => { const j = limb(s * 0.33, 1.03, 0.46, 0.075, sleeve, SKIN, 0.085); j.rotation.z = s * 0.14; u.arms.push(j); });
+  ball(0.3, SKIN, 0, 1.36, 0, b);
   const hairC = kind === 'old' ? 0xd8d4c8 : kind === 'priest' ? 0x6b5a48 : 0x231710;
-  const hair = put(new T.SphereGeometry(0.295, 9, 5, 0, Math.PI * 2, 0, Math.PI * (kind === 'priest' ? 0.3 : 0.52)), hairC, 0, 1.37, -0.02, b); hair.rotation.x = -0.25;
-  if (kind === 'woman') ball(0.13, hairC, 0, 1.66, -0.12, b);
-  [-0.1, 0.1].forEach(ex => put(new T.SphereGeometry(0.035, 6, 5), 0x1a1210, ex, 1.38, 0.26, b));
-  if (isPlayer) { cone(0.46, 0.24, 0xd9b36a, 0, 1.56, 0, 10, b); const ring = new T.Mesh(new T.RingGeometry(0.62, 0.74, 20), new T.MeshBasicMaterial({ color: 0xf4a261, transparent: true, opacity: 0.9, side: T.DoubleSide, depthWrite: false })); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.05; g.add(ring); }
+  const hair = put(new T.SphereGeometry(0.315, 9, 5, 0, Math.PI * 2, 0, Math.PI * (kind === 'priest' ? 0.3 : 0.52)), hairC, 0, 1.37, -0.02, b); hair.rotation.x = -0.25;
+  if (kind === 'woman') ball(0.13, hairC, 0, 1.68, -0.12, b);
+  [-0.1, 0.1].forEach(ex => put(new T.SphereGeometry(0.035, 6, 5), 0x1a1210, ex, 1.38, 0.28, b));
+  if (isPlayer) { cone(0.48, 0.24, 0xd9b36a, 0, 1.57, 0, 10, b); const ring = new T.Mesh(new T.RingGeometry(0.62, 0.74, 20), new T.MeshBasicMaterial({ color: 0xf4a261, transparent: true, opacity: 0.9, side: T.DoubleSide, depthWrite: false })); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.05; g.add(ring); }
   if (kind === 'child') g.scale.setScalar(0.72);
   return g;
+}
+function stride(o, moving, t, rate) {
+  const u = o.userData, sw = moving ? Math.sin(t * rate) * 0.65 : 0;
+  u.legs.forEach((l, i) => { l.rotation.x += ((i ? -sw : sw) - l.rotation.x) * 0.35; });
+  u.arms.forEach((j, i) => { j.rotation.x += ((i ? sw : -sw) - j.rotation.x) * 0.35; });
 }
 
 /* ---------- build the islands ---------- */
@@ -437,7 +447,7 @@ function step(dt) {
     if (p.moving) { const v = Math.min(d, 6 * dt); p.x += dx / d * v; p.y += dy / d * v; turn(p, Math.atan2(dx, dy), dt); }
     else { const sp = scene && scene.speaker, look = scene && p.tx != null ? (sp && sp !== p ? sp : focus) : (Math.hypot(player.x - p.x, player.y - p.y) < 7 ? player : null); if (look) turn(p, Math.atan2(look.x - p.x, look.y - p.y), dt * 0.6); }
     p.o.position.set(p.x, 0, p.y); p.o.rotation.y = p.face;
-    p.o.userData.body.position.y = p.moving ? Math.abs(Math.sin(p.t * 9)) * 0.12 : Math.sin(p.t * 1.8) * 0.02;
+    p.o.userData.body.position.y = p.moving ? Math.abs(Math.sin(p.t * 9)) * 0.08 : Math.sin(p.t * 1.8) * 0.02; stride(p.o, p.moving, p.t, 9);
     p.tag.visible = Math.hypot(player.x - p.x, player.y - p.y) < 26 || (scene && p.tx != null);
   });
   player.t += dt; player.moving = false;
@@ -455,7 +465,7 @@ function step(dt) {
     }
   }
   player.o.position.set(player.x, 0, player.y); player.o.rotation.y = player.face;
-  player.o.userData.body.position.y = player.moving ? Math.abs(Math.sin(player.t * 10)) * 0.14 : Math.sin(player.t * 1.8) * 0.02;
+  player.o.userData.body.position.y = player.moving ? Math.abs(Math.sin(player.t * 10)) * 0.09 : Math.sin(player.t * 1.8) * 0.02; stride(player.o, player.moving, player.t, 10);
   // camera: follows the visitor, or holds a scene
   const tg = focus || player, e = 1 - Math.pow(0.002, dt);
   cam.x += (tg.x - cam.x) * e; cam.y += (tg.y - cam.y) * e;
