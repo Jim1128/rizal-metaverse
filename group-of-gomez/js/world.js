@@ -309,7 +309,8 @@ const W = (function () {
     room('rotunda', 'hub', 'The Rotunda', 0x0f0c08, [14, 46], (R, g) => {
       const w = 20, d = 20, h = 9, at = wallAt(w, d);
       shell(g, w, d, h, { floor: std({ map: TX.marble(5, 5), roughness: 0.25 }), wall: M.ivory, dado: M.emerald, dadoH: 1.3 });
-      for (let i = 0; i < 8; i++) { const a = (i + 0.5) * PI / 4; column(g, Math.cos(a) * 7.3, Math.sin(a) * 7.3, h, 0.36); }
+      // no columns in front of the founders' wall, so its three plaques read clearly
+      for (let i = 0; i < 8; i++) { if (i === 1 || i === 2) continue; const a = (i + 0.5) * PI / 4; column(g, Math.cos(a) * 7.3, Math.sin(a) * 7.3, h, 0.36); }
       const ring = add(g, new T.RingGeometry(2.2, 2.45, 48), M.gold, 0, 0.012, 0); ring.rotation.x = -PI / 2;
       const sky = add(g, new T.CircleGeometry(3.4, 40), basic(0xfff3d6), 0, h - 0.02, 0); sky.rotation.x = PI / 2;
       add(g, new T.TorusGeometry(3.5, 0.14, 8, 48), M.gold, 0, h - 0.06, 0).rotation.x = PI / 2;
